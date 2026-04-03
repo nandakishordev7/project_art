@@ -1,0 +1,410 @@
+/* ===================================
+   KATHAKALI BRIDGE — SCHEDULE PAGE (v2)
+   =================================== */
+
+.schedule-page {
+    margin-left: calc(var(--sidebar-width, 80px) + 40px);
+    margin-top: calc(var(--header-height, 72px) + 20px);
+    margin-right: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ===================================
+   TIMEZONE PULSE BAR
+   =================================== */
+
+.timezone-bar {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 14px 22px;
+    border: 1px solid rgba(3, 102, 176, 0.15);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.tz-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--brass-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.tz-clocks {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.tz-separator {
+    color: rgba(3, 102, 176, 0.4);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.tz-clock {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 100px;
+}
+
+.tz-clock.teacher-tz {
+    padding: 7px 12px;
+    background: rgba(3, 102, 176, 0.08);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--brass-light);
+}
+
+.tz-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--brass-dark);
+}
+
+.tz-time {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--deepwood);
+    letter-spacing: 1px;
+}
+
+.tz-note {
+    font-size: 0.68rem;
+    color: var(--brass-dark);
+    opacity: 0.8;
+}
+
+/* ===================================
+   TWO COLUMN LAYOUT
+   =================================== */
+
+.schedule-columns {
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ===================================
+   LEFT: TIME STRIP (MASTER TIMELINE)
+   =================================== */
+
+.time-strip-col {
+    position: sticky;
+    top: calc(var(--header-height, 72px) + 20px);
+}
+
+.time-strip {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 20px 16px;
+    border: 1px solid rgba(3, 102, 176, 0.15);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* THE VERTICAL SPINE LINE — behind everything */
+.time-strip-line {
+    position: absolute;
+    left: 36px;       /* aligned with center of slot-dot */
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(180deg,
+        rgba(212,165,116,0.15) 0%,
+        rgba(212,165,116,0.45) 50%,
+        rgba(212,165,116,0.15) 100%);
+    z-index: 0;
+}
+
+/* ===================================
+   TIME SLOTS — CORRECTED NODE-DOT LAYOUT
+   The dot always sits AT the spine level (left: 36px).
+   Content flows to the right of the dot.
+   =================================== */
+
+.time-slot {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 10px 12px 10px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border-radius: var(--radius-sm);
+    z-index: 1;
+}
+
+.time-slot:hover {
+    background: rgba(3, 102, 176, 0.05);
+}
+
+/* ===================================
+   SLOT-DOT — always at the spine
+   Fixed position relative to the strip, not the card content.
+   Width = 28px so it aligns with spine at left: 36px (padding 10 + 18 = centre ~24px... 
+   We use flex so dot is the first child, naturally placed on spine).
+   =================================== */
+
+.slot-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 20%;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    border: 3px solid white;
+    /* DOT IS ALWAYS ALIGNED AS THE LEFTMOST ELEMENT OF THE ROW */
+    /* No absolute positioning — keeps it properly on the spine for all slots */
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    align-self: flex-start;
+    margin-top: 2px;
+}
+
+.completed-dot {
+    background: rgba(2, 179, 147, 0.2);
+}
+.completed-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    border-radius: 20%;
+    background: var(--palm-green);
+    transition: all 0.2s;
+}
+
+.active-dot {
+    background: var(--gradient-active, linear-gradient(135deg, #0366B0, #02B393));
+    box-shadow: 0 0 14px rgba(243, 199, 59, 0.55);
+    animation: activeNodePulse 2s ease-in-out infinite;
+}
+.active-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    border-radius: 20%;
+    background: white;
+}
+
+.upcoming-dot {
+    background: rgba(3, 102, 176, 0.12);
+}
+.upcoming-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    border-radius: 20%;
+    background: var(--brass-light);
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+/* ===================================
+   REACTIVE NODE STATES
+   Selected: dot glows amber regardless of original state
+   =================================== */
+
+.time-slot.selected .slot-dot {
+    transform: scale(1.2);
+    box-shadow: 0 0 16px rgba(243, 199, 59, 0.5);
+}
+
+.time-slot.selected .completed-dot {
+    background: linear-gradient(135deg, #0366B0, #02B393);
+}
+.time-slot.selected .completed-dot::after {
+    background: white;
+    opacity: 1;
+    width: 10px; height: 10px;
+}
+
+.time-slot.selected .upcoming-dot {
+    background: linear-gradient(135deg, #02B393, #A3CE47);
+    box-shadow: 0 0 16px rgba(212,165,116,0.5);
+}
+.time-slot.selected .upcoming-dot::after {
+    background: white;
+    opacity: 1;
+}
+
+.time-slot.selected .slot-name {
+    color: #0050a0;
+    font-weight: 700;
+}
+.time-slot.selected .slot-time {
+    color: var(--brass-dark);
+}
+
+/* ===================================
+   SLOT INFO (text to the right of the dot)
+   =================================== */
+
+.slot-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.slot-time {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--brass-dark);
+    transition: color 0.2s;
+}
+
+.slot-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--deepwood);
+    line-height: 1.3;
+    transition: color 0.2s;
+}
+
+.slot-tag {
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1px;
+}
+
+.slot-tag.done         { background: rgba(2, 179, 147, 0.1);    color: var(--palm-green); }
+.slot-tag.live         { background: rgba(243, 199, 59, 0.2);   color: #0050a0;           }
+.slot-tag.upcoming-tag { background: rgba(3, 102, 176, 0.12); color: var(--brass-dark); }
+
+/* ===================================
+   GAP BLOCKS (between classes)
+   =================================== */
+
+.gap-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px 8px 52px;   /* 52px = 10px left + 28px dot + 14px gap */
+    border-left: 2px dashed rgba(3, 102, 176, 0.18);
+    margin-left: 24px;             /* align dashed line to spine */
+    position: relative;
+    z-index: 1;
+}
+
+.gap-icon {
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.gap-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.gap-duration {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--brass-dark);
+}
+
+.gap-label {
+    font-size: 0.72rem;
+    color: var(--brass-dark);
+    opacity: 0.75;
+    line-height: 1.4;
+}
+
+/* ===================================
+   RIGHT: INSIGHT PANEL / CONSTRUCTOR
+   =================================== */
+
+.insight-panel-col {
+    min-height: 500px;
+}
+
+.insight-panel-empty {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px dashed rgba(3, 102, 176, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    color: var(--brass-dark);
+    font-size: 0.92rem;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+
+@keyframes activeNodePulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(243, 199, 59, 0.4); }
+    50%       { box-shadow: 0 0 20px rgba(243, 199, 59, 0.7); }
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.98) translateY(4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+
+@media (max-width: 1000px) {
+    .schedule-columns {
+        grid-template-columns: 1fr;
+    }
+    .time-strip-col {
+        position: static;
+    }
+    .timezone-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .tz-separator { display: none; }
+    .tz-clocks    { gap: 12px; }
+}
+
+@media (max-width: 640px) {
+    .schedule-page {
+        margin-left: calc(var(--sidebar-width, 80px) + 16px);
+        margin-right: 16px;
+    }
+}

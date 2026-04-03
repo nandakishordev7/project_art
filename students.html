@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students — Kathakali Bridge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="students.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Header + Nav injected by shared.js -->
+
+<div class="students-page">
+
+    <div class="students-top-bar">
+        <h1 class="page-title">Students</h1>
+        <div class="filter-bar">
+            <input type="text" class="filter-search" id="filterSearch" placeholder="Search by name...">
+            <select class="filter-select" id="filterClass">
+                <option value="">All Classes</option>
+                <option value="class1">Class 1</option>
+                <option value="class2">Class 2</option>
+                <option value="class3">Class 3</option>
+            </select>
+            <select class="filter-select" id="filterStatus">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="students-list" id="studentsList">
+
+        <div class="student-row"
+             data-name="Student-1" data-class="class2" data-status="active"
+             data-class-label="Class 2 — Mudra Basics"
+             data-accuracy="87%" data-attendance="94%" data-submissions="12"
+             data-email="student1@example.com" data-phone="+91 00000 00001"
+             data-joined="March 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#0366B0,#0250a0);">S1</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-1</span>
+                <span class="student-row-class">Class 2 — Mudra Basics</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">87% accuracy</span>
+                <span class="stat-pill attendance">94% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-2" data-class="class2" data-status="active"
+             data-class-label="Class 2 — Mudra Basics"
+             data-accuracy="74%" data-attendance="88%" data-submissions="9"
+             data-email="student2@example.com" data-phone="+91 00000 00002"
+             data-joined="March 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#02B393,#018a72);">S2</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-2</span>
+                <span class="student-row-class">Class 2 — Mudra Basics</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">74% accuracy</span>
+                <span class="stat-pill attendance">88% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-3" data-class="class1" data-status="active"
+             data-class-label="Class 1 — Navarasas"
+             data-accuracy="91%" data-attendance="100%" data-submissions="14"
+             data-email="student3@example.com" data-phone="+91 00000 00003"
+             data-joined="January 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#0366B0,#024f99);">S3</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-3</span>
+                <span class="student-row-class">Class 1 — Navarasas</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">91% accuracy</span>
+                <span class="stat-pill attendance">100% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-4" data-class="class3" data-status="active"
+             data-class-label="Class 3 — Thandava Movements"
+             data-accuracy="62%" data-attendance="76%" data-submissions="7"
+             data-email="student4@example.com" data-phone="+91 00000 00004"
+             data-joined="June 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#606060,#444);">S4</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-4</span>
+                <span class="student-row-class">Class 3 — Thandava Movements</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">62% accuracy</span>
+                <span class="stat-pill attendance">76% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-5" data-class="class1" data-status="inactive"
+             data-class-label="Class 1 — Navarasas"
+             data-accuracy="55%" data-attendance="60%" data-submissions="4"
+             data-email="student5@example.com" data-phone="+91 00000 00005"
+             data-joined="February 2024" data-status-label="Inactive">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#0366B0,#02B393);">S5</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-5</span>
+                <span class="student-row-class">Class 1 — Navarasas</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">55% accuracy</span>
+                <span class="stat-pill attendance">60% attendance</span>
+            </div>
+            <span class="status-badge inactive">Inactive</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-6" data-class="class2" data-status="active"
+             data-class-label="Class 2 — Mudra Basics"
+             data-accuracy="79%" data-attendance="83%" data-submissions="11"
+             data-email="student6@example.com" data-phone="+91 00000 00006"
+             data-joined="April 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#02B393,#018a72);">S6</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-6</span>
+                <span class="student-row-class">Class 2 — Mudra Basics</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">79% accuracy</span>
+                <span class="stat-pill attendance">83% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="student-row"
+             data-name="Student-7" data-class="class3" data-status="active"
+             data-class-label="Class 3 — Thandava Movements"
+             data-accuracy="83%" data-attendance="90%" data-submissions="10"
+             data-email="student7@example.com" data-phone="+91 00000 00007"
+             data-joined="March 2024" data-status-label="Active">
+            <div class="student-row-avatar" style="background: linear-gradient(135deg,#A3CE47,#7aaa28);">S7</div>
+            <div class="student-row-info">
+                <span class="student-row-name">Student-7</span>
+                <span class="student-row-class">Class 3 — Thandava Movements</span>
+            </div>
+            <div class="student-row-stats">
+                <span class="stat-pill accuracy">83% accuracy</span>
+                <span class="stat-pill attendance">90% attendance</span>
+            </div>
+            <span class="status-badge active">Active</span>
+            <svg class="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+
+        <div class="no-results" id="noResults" style="display:none;">No students match your filters.</div>
+    </div>
+</div>
+
+<!-- Student Detail Overlay -->
+<div class="student-overlay" id="studentOverlay">
+    <div class="student-detail-card">
+        <button class="student-card-close" id="studentCardClose">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="student-detail-header">
+            <div class="student-detail-avatar" id="detailAvatar">--</div>
+            <div class="student-detail-top-info">
+                <h2 id="detailName">Student Name</h2>
+                <span id="detailClass">Class</span>
+                <span class="status-badge active" id="detailStatus">Active</span>
+            </div>
+        </div>
+        <div class="student-detail-body">
+            <div class="detail-stats-row">
+                <div class="detail-stat-box">
+                    <span class="detail-stat-value" id="detailAccuracy">--</span>
+                    <span class="detail-stat-label">Accuracy</span>
+                </div>
+                <div class="detail-stat-box">
+                    <span class="detail-stat-value" id="detailAttendance">--</span>
+                    <span class="detail-stat-label">Attendance</span>
+                </div>
+                <div class="detail-stat-box">
+                    <span class="detail-stat-value" id="detailSubmissions">--</span>
+                    <span class="detail-stat-label">Submissions</span>
+                </div>
+            </div>
+            <div class="detail-info-grid">
+                <div class="detail-info-item">
+                    <label>Email</label>
+                    <span id="detailEmail">—</span>
+                </div>
+                <div class="detail-info-item">
+                    <label>Phone</label>
+                    <span id="detailPhone">—</span>
+                </div>
+                <div class="detail-info-item">
+                    <label>Class</label>
+                    <span id="detailClassLabel">—</span>
+                </div>
+                <div class="detail-info-item">
+                    <label>Joined</label>
+                    <span id="detailJoined">—</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="shared.js"></script>
+<script src="students.js"></script>
+</body>
+</html>

@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule — Kathakali Bridge</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="schedule.css">
+
+  <style>
+    /* ===================================
+       SCHEDULE PAGE — EXTENDED STYLES
+       =================================== */
+
+    /* MODE TOGGLE */
+    .mode-toggle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      padding: 0 0 4px;
+    }
+    .mode-toggle-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--brass-dark);
+    }
+    .mode-toggle-switch {
+      display: flex;
+      background: rgba(212,165,116,0.12);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .mode-btn {
+      padding: 6px 16px;
+      border-radius: 16px;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--brass-dark);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mode-btn.active {
+      background: white;
+      color: var(--deepwood);
+      box-shadow: 0 2px 8px rgba(61,47,40,0.12);
+    }
+    .mode-btn svg { flex-shrink: 0; }
+
+    /* TIMELINE — DIRECTOR MODE ENHANCEMENTS */
+    .time-strip.director-mode .time-slot.class-slot {
+      cursor: grab;
+    }
+    .gravity-point {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px 6px 44px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .time-strip.director-mode .gravity-point {
+      display: flex;
+    }
+    .time-strip.director-mode .gravity-point:hover {
+      opacity: 1 !important;
+    }
+    .time-strip.director-mode:hover .gravity-point {
+      opacity: 0.55;
+    }
+    .gravity-btn {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--brass-light);
+      background: rgba(212,165,116,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      color: var(--brass-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .time-strip.director-mode .gravity-btn:hover {
+      background: var(--brass-light);
+      border-color: var(--brass-light);
+      color: white;
+      box-shadow: 0 0 10px rgba(212,165,116,0.4);
+    }
+    .gravity-label {
+      font-size: 0.74rem;
+      color: var(--brass-dark);
+      opacity: 0.7;
+    }
+
+    /* GHOST BLOCK — free time suggestion */
+    .ghost-block {
+      display: none;
+      margin: 0 8px;
+      padding: 10px 14px;
+      border: 1.5px dashed rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      background: rgba(212,165,116,0.04);
+      font-size: 0.78rem;
+      color: var(--brass-dark);
+      opacity: 0.7;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .time-strip.director-mode .ghost-block {
+      display: block;
+    }
+    .ghost-block:hover {
+      opacity: 1;
+      border-color: var(--brass-light);
+      background: rgba(212,165,116,0.1);
+    }
+
+    /* REACTIVE NODE-DOTS — positioned on the spine, not in the card */
+    .time-slot {
+      position: relative;
+    }
+    .slot-dot {
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .time-slot.selected .slot-dot.completed-dot,
+    .time-slot.selected .slot-dot.upcoming-dot {
+      background: var(--gradient-active) !important;
+      box-shadow: 0 0 14px rgba(244,164,96,0.55);
+      transform: scale(1.15);
+    }
+    .time-slot.selected .slot-dot.completed-dot::after,
+    .time-slot.selected .slot-dot.upcoming-dot::after {
+      background: white;
+      width: 10px; height: 10px;
+    }
+    .time-slot.selected .slot-name {
+      color: #9a5c10;
+    }
+
+    /* ===================================
+       CLASS CONSTRUCTOR WORKSPACE
+       =================================== */
+    .constructor-workspace {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(212,165,116,0.15);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 520px;
+      animation: fadeInScale 0.3s ease forwards;
+    }
+
+    .constructor-top {
+      background: var(--gradient-warm);
+      padding: 24px 28px 20px;
+    }
+
+    .constructor-mode-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .constructor-mode-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+    }
+
+    .constructor-title-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .constructor-title-editable {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: white;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 0;
+      width: 100%;
+      cursor: default;
+    }
+    .director .constructor-title-editable {
+      border-bottom: 1.5px solid rgba(255,255,255,0.3);
+      padding-bottom: 4px;
+      cursor: text;
+    }
+    .constructor-title-editable::placeholder { color: rgba(255,255,255,0.5); }
+
+    .constructor-meta-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .constructor-time-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.12);
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* STUDENT PICKER */
+    .student-picker-section {
+      padding: 20px 28px;
+      border-bottom: 1px solid rgba(212,165,116,0.1);
+    }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--brass-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .student-picker-faces {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .student-face {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .student-face:hover { transform: translateY(-2px); }
+    .student-face-avatar {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--gradient-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: white;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+    .student-face.enrolled .student-face-avatar {
+      border-color: var(--brass-light);
+      box-shadow: 0 0 8px rgba(212,165,116,0.3);
+    }
+    .student-face.not-enrolled .student-face-avatar {
+      opacity: 0.45;
+      filter: grayscale(0.3);
+    }
+    .student-face-name {
+      font-size: 0.65rem;
+      color: var(--brass-dark);
+      text-align: center;
+      max-width: 44px;
+      line-height: 1.2;
+    }
+    .director .student-face.not-enrolled:hover .student-face-avatar {
+      opacity: 1;
+      filter: none;
+      border-color: rgba(212,165,116,0.4);
+    }
+    .add-student-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .add-student-chip .student-face-avatar {
+      background: rgba(212,165,116,0.1);
+      border: 1.5px dashed rgba(212,165,116,0.4);
+      color: var(--brass-dark);
+      font-size: 1.1rem;
+    }
+    .add-student-chip .student-face-name { color: var(--brass-dark); }
+
+    /* RESOURCE DOCK */
+    .resource-dock-section {
+      padding: 20px 28px;
+      border-bottom: 1px solid rgba(212,165,116,0.1);
+      flex: 1;
+    }
+    .resource-dock-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .resource-card {
+      background: rgba(250,248,243,0.8);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(212,165,116,0.15);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .resource-card:hover {
+      border-color: rgba(212,165,116,0.35);
+      background: white;
+      transform: translateY(-1px);
+    }
+    .resource-card-icon {
+      font-size: 1.4rem;
+    }
+    .resource-card-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--deepwood);
+      line-height: 1.3;
+    }
+    .resource-card-type {
+      font-size: 0.68rem;
+      color: var(--brass-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .resource-card-remove {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(199,74,60,0.1);
+      border: none;
+      color: #c74a3c;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .director .resource-card:hover .resource-card-remove {
+      display: flex;
+    }
+    .resource-card-add {
+      background: rgba(212,165,116,0.06);
+      border: 1.5px dashed rgba(212,165,116,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 80px;
+      font-size: 0.8rem;
+      color: var(--brass-dark);
+      cursor: pointer;
+      display: none;
+    }
+    .director .resource-card-add {
+      display: flex;
+    }
+    .resource-card-add:hover {
+      background: rgba(212,165,116,0.12);
+      border-color: var(--brass-light);
+    }
+
+    /* PREP NUDGE */
+    .prep-nudge-section {
+      padding: 18px 28px 22px;
+    }
+    .prep-nudge-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .prep-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(212,165,116,0.25);
+      background: rgba(250,248,243,0.7);
+      font-size: 0.78rem;
+      color: var(--deepwood);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .prep-chip:hover {
+      border-color: var(--brass-light);
+      background: rgba(212,165,116,0.08);
+    }
+    .prep-chip.selected {
+      background: rgba(244,164,96,0.15);
+      border-color: var(--brass-light);
+      color: #9a5c10;
+      font-weight: 600;
+    }
+    .prep-chip-icon { font-size: 0.9rem; }
+
+    /* READ-ONLY (studio) state: nudges not clickable */
+    .studio .prep-chip { cursor: default; pointer-events: none; }
+
+    /* ===================================
+       SYLLABUS LIBRARY DRAWER
+       =================================== */
+    .syllabus-drawer-tab {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .syllabus-tab-btn {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      padding: 20px 10px;
+      background: var(--gradient-warm);
+      border: none;
+      border-radius: 12px 0 0 12px;
+      color: white;
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: -4px 0 20px rgba(61,47,40,0.12);
+      transition: all 0.2s;
+    }
+    .syllabus-tab-btn:hover {
+      padding-right: 14px;
+      box-shadow: -6px 0 24px rgba(61,47,40,0.18);
+    }
+
+    .syllabus-drawer {
+      position: fixed;
+      top: var(--header-height, 72px);
+      right: -380px;
+      width: 360px;
+      bottom: 0;
+      background: white;
+      border-left: 1px solid rgba(212,165,116,0.2);
+      box-shadow: -12px 0 40px rgba(61,47,40,0.12);
+      z-index: 799;
+      transition: right 0.35s cubic-bezier(0.16,1,0.3,1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .syllabus-drawer.open {
+      right: 0;
+    }
+    .syllabus-drawer-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(212,165,116,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .syllabus-drawer-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--deepwood);
+      flex: 1;
+    }
+    .syllabus-drawer-close {
+      background: none; border: none;
+      font-size: 1.1rem; cursor: pointer;
+      color: var(--brass-dark);
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .syllabus-drawer-close:hover { background: rgba(212,165,116,0.1); }
+
+    .syllabus-categories {
+      display: flex;
+      gap: 6px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(212,165,116,0.1);
+      flex-wrap: wrap;
+    }
+    .syllabus-cat {
+      padding: 4px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(212,165,116,0.2);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--brass-dark);
+    }
+    .syllabus-cat.active {
+      background: var(--brass-light);
+      border-color: var(--brass-light);
+      color: white;
+    }
+
+    .syllabus-cards-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .syllabus-card {
+      background: rgba(250,248,243,0.9);
+      border: 1px solid rgba(212,165,116,0.2);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      cursor: grab;
+      transition: all 0.2s;
+      user-select: none;
+      position: relative;
+    }
+    .syllabus-card:hover {
+      background: white;
+      border-color: rgba(212,165,116,0.4);
+      transform: translateX(-4px);
+      box-shadow: 4px 4px 16px rgba(61,47,40,0.08);
+    }
+    .syllabus-card:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+    .syllabus-card-name {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--deepwood);
+      margin-bottom: 4px;
+    }
+    .syllabus-card-meta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .syllabus-card-duration {
+      font-size: 0.75rem;
+      color: var(--brass-dark);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .syllabus-card-art {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(212,165,116,0.12);
+      color: var(--brass-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+    .syllabus-card-resources {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .syllabus-res-chip {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 8px;
+      background: rgba(212,165,116,0.08);
+      color: var(--deepwood);
+    }
+    .syllabus-card-inject-btn {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: var(--gradient-warm);
+      border: none;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+    .syllabus-card:hover .syllabus-card-inject-btn {
+      opacity: 1;
+    }
+
+    .syllabus-add-new {
+      margin: 0 14px 14px;
+      padding: 12px;
+      background: rgba(212,165,116,0.06);
+      border: 1.5px dashed rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--brass-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .syllabus-add-new:hover {
+      background: rgba(212,165,116,0.1);
+      border-color: var(--brass-light);
+    }
+
+    /* DRAG-OVER INDICATOR on time slots */
+    .time-slot.drag-over {
+      background: rgba(244,164,96,0.15) !important;
+      border-radius: var(--radius-sm);
+    }
+    .time-slot.drag-over .slot-dot {
+      transform: scale(1.2);
+      box-shadow: 0 0 14px rgba(244,164,96,0.55);
+    }
+
+    /* QUICK-ADD BUBBLE */
+    .quick-add-bubble {
+      position: fixed;
+      background: white;
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 16px 48px rgba(61,47,40,0.15);
+      border: 1px solid rgba(212,165,116,0.2);
+      z-index: 1200;
+      width: 280px;
+      display: none;
+    }
+    .quick-add-bubble.open { display: block; }
+    .quick-add-bubble h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--deepwood);
+      margin: 0 0 12px;
+    }
+    .quick-add-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--deepwood);
+      outline: none;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    .quick-add-input:focus { border-color: var(--brass-light); }
+    .quick-add-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .quick-add-cancel {
+      background: none; border: none;
+      font-size: 0.82rem; color: var(--brass-dark);
+      cursor: pointer; padding: 5px 10px;
+    }
+    .quick-add-save {
+      background: var(--gradient-warm);
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ===================================
+       INJECT CONFIRMATION TOAST
+       =================================== */
+    .inject-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--deepwood);
+      color: white;
+      padding: 12px 22px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .inject-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.98) translateY(4px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .syllabus-drawer { width: 100%; right: -100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =========================================
+     GLASS HEADER & FLOATING NAV (injected by shared.js)
+     ========================================= -->
+
+<!-- =========================================
+     SCHEDULE PAGE CONTENT
+     ========================================= -->
+<main class="schedule-page">
+
+  <!-- TOP: TIMEZONE BAR -->
+  <div class="timezone-bar">
+    <div class="tz-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Live Clocks
+    </div>
+    <div class="tz-clocks">
+      <div class="tz-clock teacher-tz">
+        <span class="tz-name"> IST — Your Time</span>
+        <span class="tz-time" id="clockIST">—</span>
+        <span class="tz-note">Thiruvananthapuram</span>
+      </div>
+      <span class="tz-separator">·</span>
+      <div class="tz-clock">
+        <span class="tz-name"> GMT</span>
+        <span class="tz-time" id="clockGMT">—</span>
+        <span class="tz-note">London</span>
+      </div>
+      <span class="tz-separator">·</span>
+      <div class="tz-clock">
+        <span class="tz-name"> EST</span>
+        <span class="tz-time" id="clockEST">—</span>
+        <span class="tz-note">New York</span>
+      </div>
+      <span class="tz-separator">·</span>
+      <div class="tz-clock">
+        <span class="tz-name"> SGT</span>
+        <span class="tz-time" id="clockSGT">—</span>
+        <span class="tz-note">Singapore</span>
+      </div>
+    </div>
+
+    <!-- MODE TOGGLE on the right of timezone bar -->
+    <div class="mode-toggle-bar">
+      <span class="mode-toggle-label">Mode</span>
+      <div class="mode-toggle-switch">
+        <button class="mode-btn active" id="btnStudio" data-mode="studio">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          Studio View
+        </button>
+        <button class="mode-btn" id="btnDirector" data-mode="director">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Director Mode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TWO-COLUMN LAYOUT -->
+  <div class="schedule-columns">
+
+    <!-- LEFT: MASTER TIMELINE -->
+    <div class="time-strip-col">
+      <div class="time-strip" id="mainTimeStrip">
+        <div class="time-strip-line"></div>
+
+        <!-- 9:00 AM — COMPLETED -->
+        <div class="time-slot class-slot completed-slot"
+             data-name="Padam Basics — Foundation"
+             data-time="9:00 AM – 10:00 AM"
+             data-students="6"
+             data-energy="Calm"
+             data-energy-level="good"
+             data-last-session="Covered Sringara rasa expressions, first 3 hastas. Students excelled at Pataka mudra."
+             data-last-page="Sringara Rasa, Hasta Viniyoga Pg.12"
+             data-resources="Natyashastra PDF Ch.4, Padam Audio Track 1, Practice Video Link">
+          <div class="slot-dot completed-dot"></div>
+          <div class="slot-info">
+            <span class="slot-time">9:00 AM</span>
+            <span class="slot-name">Padam Basics — Foundation</span>
+            <span class="slot-tag done">Completed</span>
+          </div>
+        </div>
+
+        <div class="gravity-point" data-time="10:30">
+          <div class="gravity-btn" title="Add class here">+</div>
+          <span class="gravity-label">Add class at 10:30 AM</span>
+        </div>
+
+        <div class="gap-block">
+          <span class="gap-icon"></span>
+          <div class="gap-text">
+            <span class="gap-duration">45 min break</span>
+            <span class="gap-label">Usually free — good slot for a short recital check-in</span>
+          </div>
+        </div>
+
+        <div class="ghost-block" data-suggest-time="10:45">
+           Suggested free slot · 10:45 AM
+        </div>
+
+        <!-- 11:00 AM — COMPLETED -->
+        <div class="time-slot class-slot completed-slot"
+             data-name="Navarasas — Vocal Expression"
+             data-time="11:00 AM – 12:00 PM"
+             data-students="4"
+             data-energy="High"
+             data-energy-level="good"
+             data-last-session="Students practiced Hasya and Karuna rasas. Voice projection improved significantly."
+             data-last-page="Navarasas Pg.8, Abhinaya Darpana"
+             data-resources="Audio Track — Raga Bhairavi, Voice Exercise PDF, Session Recording">
+          <div class="slot-dot completed-dot"></div>
+          <div class="slot-info">
+            <span class="slot-time">11:00 AM</span>
+            <span class="slot-name">Navarasas — Vocal Expression</span>
+            <span class="slot-tag done">Completed</span>
+          </div>
+        </div>
+
+        <div class="gravity-point" data-time="12:30">
+          <div class="gravity-btn" title="Add class here">+</div>
+          <span class="gravity-label">Add class at 12:30 PM</span>
+        </div>
+
+        <div class="gap-block">
+          <span class="gap-icon"></span>
+          <div class="gap-text">
+            <span class="gap-duration">2 hr lunch</span>
+            <span class="gap-label">Rest & preparation window</span>
+          </div>
+        </div>
+
+        <!-- 2:00 PM — ACTIVE -->
+        <div class="time-slot class-slot active-slot"
+             data-name="Mudra Refinement Workshop"
+             data-time="2:00 PM – 3:30 PM"
+             data-students="8"
+             data-energy="Peak"
+             data-energy-level="good"
+             data-last-session="Focused on Tripataka and Ardhapataka. AI recognition flagged Student-1's wrist angle."
+             data-last-page="Hasta Viniyoga Pg.22 — Tripataka"
+             data-resources="AI Mudra Feedback Report, Video Recording, Gesture Chart PDF, Practice Playlist">
+          <div class="slot-dot active-dot"></div>
+          <div class="slot-info">
+            <span class="slot-time">2:00 PM</span>
+            <span class="slot-name">Mudra Refinement Workshop</span>
+            <span class="slot-tag live">Live Now</span>
+          </div>
+        </div>
+
+        <div class="gravity-point" data-time="16:00">
+          <div class="gravity-btn" title="Add class here">+</div>
+          <span class="gravity-label">Add class at 4:00 PM</span>
+        </div>
+
+        <!-- 4:30 PM — UPCOMING -->
+        <div class="time-slot class-slot upcoming-slot"
+             data-name="Drawing — Charcoal Portraits"
+             data-time="4:30 PM – 5:30 PM"
+             data-students="5"
+             data-energy="Moderate"
+             data-energy-level="warn"
+             data-last-session="Students completed gesture sketches. Need to focus on shading techniques next."
+             data-last-page="Charcoal Technique Pg.6"
+             data-resources="Reference Image Gallery, Charcoal Guide PDF, Kaggle Art Dataset Link">
+          <div class="slot-dot upcoming-dot"></div>
+          <div class="slot-info">
+            <span class="slot-time">4:30 PM</span>
+            <span class="slot-name">Drawing — Charcoal Portraits</span>
+            <span class="slot-tag upcoming-tag">In 2.5 hrs</span>
+          </div>
+        </div>
+
+        <div class="gravity-point" data-time="17:30">
+          <div class="gravity-btn" title="Add class here">+</div>
+          <span class="gravity-label">Add class at 5:30 PM</span>
+        </div>
+
+        <div class="gap-block">
+          <span class="gap-icon"></span>
+          <div class="gap-text">
+            <span class="gap-duration">30 min</span>
+            <span class="gap-label">Evening sandhya — usually reserved</span>
+          </div>
+        </div>
+
+        <!-- 6:00 PM — UPCOMING -->
+        <div class="time-slot class-slot upcoming-slot"
+             data-name="Singing — Carnatic Foundation"
+             data-time="6:00 PM – 7:00 PM"
+             data-students="3"
+             data-energy="Calm"
+             data-energy-level="good"
+             data-last-session="Worked on Shankarabharanam scale. Students need more practice on gamaka patterns."
+             data-last-page="Carnatic Swaras Pg.14"
+             data-resources="Raga Reference Audio, Swara Chart PDF, Metronome Track">
+          <div class="slot-dot upcoming-dot"></div>
+          <div class="slot-info">
+            <span class="slot-time">6:00 PM</span>
+            <span class="slot-name">Singing — Carnatic Foundation</span>
+            <span class="slot-tag upcoming-tag">Later today</span>
+          </div>
+        </div>
+
+      </div><!-- /time-strip -->
+    </div><!-- /time-strip-col -->
+
+    <!-- RIGHT: CLASS CONSTRUCTOR / INSIGHT PANEL -->
+    <div class="insight-panel-col" id="insightPanelCol">
+
+      <!-- Empty state -->
+      <div class="insight-panel-empty" id="insightEmpty">
+        <span style="font-size:2rem;margin-bottom:8px;"></span>
+        <span style="font-weight:600;color:var(--deepwood)">Select a class from the timeline</span>
+        <span style="font-size:0.82rem;opacity:0.75">or drag a Syllabus Card here</span>
+      </div>
+
+      <!-- Constructor Workspace (hidden until slot is selected) -->
+      <div class="constructor-workspace studio" id="constructorCard" style="display:none">
+
+        <!-- TOP BAND -->
+        <div class="constructor-top">
+          <div class="constructor-mode-label" id="constructorModeLabel">Studio View — Read Only</div>
+          <div class="constructor-title-wrap">
+            <input class="constructor-title-editable" id="constructorTitle"
+                   placeholder="Class title…" readonly>
+          </div>
+          <div class="constructor-meta-row">
+            <div class="constructor-time-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span id="constructorTime">—</span>
+            </div>
+            <div class="constructor-time-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+              <span id="constructorStudents">—</span> students
+            </div>
+            <div class="energy-badge good" id="constructorEnergyBadge">
+               <span id="constructorEnergy">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STUDENT PICKER -->
+        <div class="student-picker-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Enrolled Students
+          </div>
+          <div class="student-picker-faces" id="studentPickerFaces">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- LAST SESSION NOTE -->
+        <div class="last-session-ghost" id="lastSessionSection">
+          <div class="ghost-header">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            Last Session Recap
+          </div>
+          <p id="constructorLastSession">—</p>
+          <div class="last-page-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <span id="constructorLastPage">—</span>
+          </div>
+        </div>
+
+        <!-- RESOURCE DOCK -->
+        <div class="resource-dock-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Attached Resources
+          </div>
+          <div class="resource-dock-grid" id="resourceDockGrid">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- PREP NUDGE -->
+        <div class="prep-nudge-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            Pre-Class Nudges — sent 1 hr before
+          </div>
+          <div class="prep-nudge-chips" id="prepNudgeChips">
+            <div class="prep-chip" data-nudge="stretch">
+              <span class="prep-chip-icon"></span> Stretch reminder
+            </div>
+            <div class="prep-chip" data-nudge="sharpen">
+              <span class="prep-chip-icon"></span> Sharpen pencils
+            </div>
+            <div class="prep-chip" data-nudge="mudra">
+              <span class="prep-chip-icon"></span> Warm up hands
+            </div>
+            <div class="prep-chip" data-nudge="vocal">
+              <span class="prep-chip-icon"></span> Vocal warm-up
+            </div>
+            <div class="prep-chip" data-nudge="water">
+              <span class="prep-chip-icon"></span> Hydrate
+            </div>
+            <div class="prep-chip" data-nudge="bring_materials">
+              <span class="prep-chip-icon"></span> Bring materials
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /constructorCard -->
+
+    </div><!-- /insight-panel-col -->
+
+  </div><!-- /schedule-columns -->
+
+</main><!-- /schedule-page -->
+
+<!-- =========================================
+     SYLLABUS LIBRARY DRAWER
+     ========================================= -->
+<div class="syllabus-drawer-tab">
+  <button class="syllabus-tab-btn" id="syllabusTabBtn" title="Open Syllabus Library">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(90deg)">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+    Syllabus Library
+  </button>
+</div>
+
+<div class="syllabus-drawer" id="syllabusDrawer">
+  <div class="syllabus-drawer-header">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass-dark)" stroke-width="2">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+    <span class="syllabus-drawer-title">Syllabus Library</span>
+    <button class="syllabus-drawer-close" id="syllabusDrawerClose"></button>
+  </div>
+  <div class="syllabus-categories">
+    <div class="syllabus-cat active" data-cat="all">All</div>
+    <div class="syllabus-cat" data-cat="kathakali">Kathakali</div>
+    <div class="syllabus-cat" data-cat="singing">Singing</div>
+    <div class="syllabus-cat" data-cat="drawing">Drawing</div>
+  </div>
+  <div class="syllabus-cards-list" id="syllabusCardsList">
+    <!-- Populated by JS -->
+  </div>
+  <div class="syllabus-add-new" id="syllabusAddNew">
+    ＋ Create new template
+  </div>
+</div>
+
+<!-- QUICK-ADD BUBBLE -->
+<div class="quick-add-bubble" id="quickAddBubble">
+  <h4>Add class at <span id="quickAddTime">—</span></h4>
+  <input type="text" class="quick-add-input" id="quickAddName" placeholder="Class name…">
+  <input type="text" class="quick-add-input" id="quickAddDuration" placeholder="Duration (e.g. 60 min)">
+  <div class="quick-add-actions">
+    <button class="quick-add-cancel" id="quickAddCancel">Cancel</button>
+    <button class="quick-add-save" id="quickAddSave">Add →</button>
+  </div>
+</div>
+
+<!-- INJECT TOAST -->
+<div class="inject-toast" id="injectToast">
+   <span id="injectToastMsg">Syllabus injected</span>
+</div>
+
+<!-- SHARED HEADER + NAV -->
+<script src="shared.js"></script>
+<!-- SCHEDULE PAGE LOGIC -->
+<script src="schedule.js"></script>
+
+</body>
+</html>

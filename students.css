@@ -1,0 +1,381 @@
+/* ===================================
+   KATHAKALI BRIDGE - STUDENTS PAGE
+   =================================== */
+
+.students-page {
+    margin-left: calc(var(--sidebar-width) + 40px);
+    margin-top: calc(var(--header-height) + 32px);
+    margin-right: 40px;
+    margin-bottom: 40px;
+    max-width: 1200px;
+}
+
+/* ===================================
+   TOP BAR: TITLE + FILTERS
+   =================================== */
+
+.students-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--deepwood);
+}
+
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-search {
+    padding: 9px 16px;
+    border: 1px solid rgba(3, 102, 176, 0.3);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--deepwood);
+    background: white;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.2s;
+}
+
+.filter-search:focus {
+    border-color: var(--brass-light);
+}
+
+.filter-select {
+    padding: 9px 14px;
+    border: 1px solid rgba(3, 102, 176, 0.3);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--deepwood);
+    background: white;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+    border-color: var(--brass-light);
+}
+
+/* ===================================
+   STUDENTS LIST
+   =================================== */
+
+.students-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.student-row {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    border: 1px solid rgba(3, 102, 176, 0.12);
+    box-shadow: 0 2px 8px rgba(13, 31, 53, 0.04);
+    transition: all 0.25s ease;
+}
+
+.student-row:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(13, 31, 53, 0.08);
+    border-color: rgba(3, 102, 176, 0.3);
+}
+
+.student-row-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--gradient-warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.student-row-avatar img, .student-detail-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.student-row-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 180px;
+}
+
+.student-row-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--deepwood);
+}
+
+.student-row-class {
+    font-size: 0.82rem;
+    color: var(--brass-dark);
+}
+
+.student-row-stats {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.stat-pill {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.stat-pill.accuracy {
+    background: rgba(3, 102, 176, 0.08);
+    color: #0366B0;
+}
+
+.stat-pill.attendance {
+    background: rgba(2, 179, 147, 0.10);
+    color: #028a72;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+
+.status-badge.active {
+    background: rgba(2, 179, 147, 0.12);
+    color: #028a72;
+}
+
+.status-badge.inactive {
+    background: rgba(96, 96, 96, 0.1);
+    color: #606060;
+}
+
+.row-arrow {
+    color: var(--duk-teal, #02B393);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.student-row:hover .row-arrow {
+    transform: translateX(4px);
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--brass-dark);
+    font-size: 0.95rem;
+}
+
+/* ===================================
+   STUDENT DETAIL OVERLAY
+   =================================== */
+
+.student-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 36, 31, 0.35);
+    backdrop-filter: blur(4px);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.student-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.student-detail-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(13, 31, 53, 0.18);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.student-overlay.open .student-detail-card {
+    transform: translateY(0);
+}
+
+.student-card-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.3);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2;
+}
+
+.student-card-close:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+.student-detail-header {
+    background: var(--gradient-warm);
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.student-detail-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.student-detail-top-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.student-detail-top-info h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.student-detail-top-info > span:nth-child(2) {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.85);
+}
+
+.student-detail-top-info .status-badge.active {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    width: fit-content;
+}
+
+.student-detail-top-info .status-badge.inactive {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    width: fit-content;
+}
+
+.student-detail-body {
+    padding: var(--space-lg);
+}
+
+.detail-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: var(--space-lg);
+}
+
+.detail-stat-box {
+    background: rgba(3, 102, 176, 0.07);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(3, 102, 176, 0.15);
+}
+
+.detail-stat-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deepwood);
+    margin-bottom: 4px;
+}
+
+.detail-stat-label {
+    font-size: 0.78rem;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-info-item label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--brass-dark);
+    font-weight: 600;
+}
+
+.detail-info-item span {
+    font-size: 0.92rem;
+    color: var(--deepwood);
+}

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Kathakali Bridge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header + Nav injected by shared.js -->
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper" id="contentWrapper">
+        <main class="dashboard-container">
+
+            <!-- Widget A: Next Class -->
+            <div class="widget widget-next-class">
+                <div class="widget-glow"></div>
+                <div class="next-class-header">
+                    <span class="widget-label">Upcoming Session</span>
+                    <span class="time-until" id="timeUntil">in 45 minutes</span>
+                </div>
+                <div class="class-details">
+                    <h3 class="class-title" id="widgetClassTitle">Class 2 — Mudra Basics</h3>
+                    <div class="class-meta">
+                        <span class="class-time" id="widgetClassTime">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            2:00 PM - 3:30 PM
+                        </span>
+                        <span class="class-students" id="widgetClassStudents">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                            </svg>
+                            8 Students
+                        </span>
+                    </div>
+                    <div class="student-avatars">
+                        <div class="avatar-stack">
+                            <div class="avatar-initials-pill" style="background:#0366B0">S1</div>
+                            <div class="avatar-initials-pill" style="background:#02B393">S2</div>
+                            <div class="avatar-initials-pill" style="background:#0366B0">S3</div>
+                            <div class="avatar-initials-pill" style="background:#606060">S4</div>
+                            <div class="avatar-more" id="widgetAvatarMore">+4</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="enter-studio-btn">
+                    <span>Enter Studio</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Widget B: Class Vibe Heatmap -->
+            <div class="widget widget-heatmap">
+                <div class="widget-glow"></div>
+                <div class="heatmap-header">
+                    <span class="widget-label">Class Vibe</span>
+                    <span class="heatmap-date">Today</span>
+                </div>
+                <div class="heatmap-grid">
+                    <div class="heatmap-cell good" data-metric="focus"
+                         data-tip="Focus is strong — 78% of assigned video content has been watched.">
+                        <div class="heatmap-cell-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <span class="heatmap-cell-label">Focus</span>
+                        <span class="heatmap-cell-value">78%</span>
+                        <span class="heatmap-cell-sub">video watched</span>
+                    </div>
+                    <div class="heatmap-cell warn" data-metric="speed"
+                         data-tip="Submission delay — average +1.4 day delay. Consider sending a nudge to Class 2.">
+                        <div class="heatmap-cell-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <span class="heatmap-cell-label">Submission Speed</span>
+                        <span class="heatmap-cell-value">+1.4d</span>
+                        <span class="heatmap-cell-sub">avg delay</span>
+                    </div>
+                    <div class="heatmap-cell bad" data-metric="friction"
+                         data-tip="5 AI recognition errors this week — low-light recording issues detected.">
+                        <div class="heatmap-cell-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <span class="heatmap-cell-label">Tech Friction</span>
+                        <span class="heatmap-cell-value">5 errors</span>
+                        <span class="heatmap-cell-sub">AI accuracy</span>
+                    </div>
+                    <div class="heatmap-cell good" data-metric="pulse"
+                         data-tip="Overall class pulse is good — 3 of 4 metrics are on track this week.">
+                        <div class="heatmap-cell-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <span class="heatmap-cell-label">Overall Pulse</span>
+                        <span class="heatmap-cell-value">Good</span>
+                        <span class="heatmap-cell-sub">3 of 4 on track</span>
+                    </div>
+                </div>
+                <p class="heatmap-tip" id="heatmapTip">Hover a metric for details.</p>
+            </div>
+
+            <!-- Widget C: Priority Review Queue -->
+            <div class="widget widget-critique">
+                <div class="widget-glow"></div>
+                <div class="critique-header">
+                    <span class="widget-label">Priority Review Queue</span>
+                    <span class="critique-count">4 pending</span>
+                </div>
+                <div class="critique-queue">
+                    <div class="critique-card"
+                         data-student="Student-1" data-assignment="Hamsasya Mudra — Attempt 3"
+                         data-submitted="2 hours ago" data-diff="38" data-class="Class 2"
+                         data-ref-label="Teacher Reference — Session 5" data-sub-label="Student-1 Submission">
+                        <div class="critique-thumb reference-thumb">
+                            <img src="assests/mudra-practice-1.jpeg" alt="Reference" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Reference</span>
+                        </div>
+                        <div class="critique-divider">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="critique-thumb submission-thumb">
+                            <img src="assests/mudra-practice-2.jpeg" alt="Submission" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Submission</span>
+                        </div>
+                        <div class="critique-meta">
+                            <span class="critique-student-name">Student-1</span>
+                            <span class="critique-assignment-name">Hamsasya Mudra — Attempt 3</span>
+                            <span class="critique-time">2 hours ago · Class 2</span>
+                            <div class="diff-score high">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+                                38% deviation
+                            </div>
+                        </div>
+                        <button class="critique-open-btn">Open Critique</button>
+                    </div>
+                    <div class="critique-card"
+                         data-student="Student-2" data-assignment="Tripataka — Finger Alignment"
+                         data-submitted="5 hours ago" data-diff="21" data-class="Class 2"
+                         data-ref-label="Teacher Reference — Session 4" data-sub-label="Student-2 Submission">
+                        <div class="critique-thumb reference-thumb">
+                            <img src="assests/mudra-practice-3.jpeg" alt="Reference" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Reference</span>
+                        </div>
+                        <div class="critique-divider">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="critique-thumb submission-thumb">
+                            <img src="assests/mudra-practice-4.jpeg" alt="Submission" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Submission</span>
+                        </div>
+                        <div class="critique-meta">
+                            <span class="critique-student-name">Student-2</span>
+                            <span class="critique-assignment-name">Tripataka — Finger Alignment</span>
+                            <span class="critique-time">5 hours ago · Class 2</span>
+                            <div class="diff-score medium">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                21% deviation
+                            </div>
+                        </div>
+                        <button class="critique-open-btn">Open Critique</button>
+                    </div>
+                    <div class="critique-card"
+                         data-student="Student-3" data-assignment="Ardhachandra — Wrist Angle"
+                         data-submitted="1 day ago" data-diff="9" data-class="Class 1"
+                         data-ref-label="Teacher Reference — Session 8" data-sub-label="Student-3 Submission">
+                        <div class="critique-thumb reference-thumb">
+                            <img src="assests/mudra-practice-1.jpeg" alt="Reference" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Reference</span>
+                        </div>
+                        <div class="critique-divider">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="critique-thumb submission-thumb">
+                            <img src="assests/mudra-practice-2.jpeg" alt="Submission" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Submission</span>
+                        </div>
+                        <div class="critique-meta">
+                            <span class="critique-student-name">Student-3</span>
+                            <span class="critique-assignment-name">Ardhachandra — Wrist Angle</span>
+                            <span class="critique-time">1 day ago · Class 1</span>
+                            <div class="diff-score low">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                9% deviation
+                            </div>
+                        </div>
+                        <button class="critique-open-btn">Open Critique</button>
+                    </div>
+                    <div class="critique-card"
+                         data-student="Student-4" data-assignment="Pataka — Full Sequence"
+                         data-submitted="1 day ago" data-diff="15" data-class="Class 3"
+                         data-ref-label="Teacher Reference — Session 6" data-sub-label="Student-4 Submission">
+                        <div class="critique-thumb reference-thumb">
+                            <img src="assests/mudra-practice-3.jpeg" alt="Reference" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Reference</span>
+                        </div>
+                        <div class="critique-divider">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="critique-thumb submission-thumb">
+                            <img src="assests/mudra-practice-4.jpeg" alt="Submission" onerror="this.parentElement.style.background='rgba(212,165,116,0.15)'">
+                            <span class="thumb-tag">Submission</span>
+                        </div>
+                        <div class="critique-meta">
+                            <span class="critique-student-name">Student-4</span>
+                            <span class="critique-assignment-name">Pataka — Full Sequence</span>
+                            <span class="critique-time">1 day ago · Class 3</span>
+                            <div class="diff-score medium">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                15% deviation
+                            </div>
+                        </div>
+                        <button class="critique-open-btn">Open Critique</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget D: Today's Schedule -->
+            <div class="widget widget-schedule">
+                <div class="widget-glow"></div>
+                <div class="schedule-widget-header">
+                    <span class="widget-label">Today's Schedule</span>
+                    <a href="schedule.html" class="schedule-view-all">
+                        View full schedule
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+                <div class="timeline-flow timeline-horizontal">
+                    <div class="timeline-line-h"></div>
+                    <div class="timeline-node completed" data-title="Class 1 — Navarasas" data-time="10:00 AM - 11:30 AM" data-students="3">
+                        <div class="node-dot"></div>
+                        <div class="node-content">
+                            <span class="node-time">10:00 AM</span>
+                            <span class="node-title">Class 1</span>
+                            <span class="node-meta">3 students</span>
+                        </div>
+                    </div>
+                    <div class="timeline-node active" data-title="Class 2 — Mudra Basics" data-time="2:00 PM - 3:30 PM" data-students="8">
+                        <div class="node-dot"></div>
+                        <div class="node-content">
+                            <span class="node-time">2:00 PM</span>
+                            <span class="node-title">Class 2</span>
+                            <span class="node-meta">8 students</span>
+                        </div>
+                    </div>
+                    <div class="timeline-node upcoming" data-title="Class 3 — Thandava Movements" data-time="5:30 PM - 7:00 PM" data-students="5">
+                        <div class="node-dot"></div>
+                        <div class="node-content">
+                            <span class="node-time">5:30 PM</span>
+                            <span class="node-title">Class 3</span>
+                            <span class="node-meta">5 students</span>
+                        </div>
+                    </div>
+                    <div class="timeline-node upcoming" data-title="Class 4 — Advanced Expressions" data-time="7:00 PM - 8:30 PM" data-students="12">
+                        <div class="node-dot"></div>
+                        <div class="node-content">
+                            <span class="node-time">7:00 PM</span>
+                            <span class="node-title">Class 4</span>
+                            <span class="node-meta">12 students</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Critique Split-Pane Overlay -->
+    <div class="critique-overlay" id="critiqueOverlay">
+        <div class="critique-modal" id="critiqueModal">
+            <div class="critique-modal-header">
+                <div>
+                    <h3 id="critiqueModalTitle">Assignment</h3>
+                    <span id="critiqueModalMeta">Student · Class</span>
+                </div>
+                <button class="critique-modal-close" id="critiqueModalClose">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="critique-split-pane">
+                <div class="split-side">
+                    <div class="split-label" id="splitLabelLeft">Teacher Reference</div>
+                    <div class="split-media">
+                        <img id="splitImgLeft" src="assests/mudra-practice-1.jpeg" alt="Reference">
+                        <div class="split-play-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="split-divider-bar">
+                    <div class="split-diff-badge" id="splitDiffBadge">-- deviation</div>
+                </div>
+                <div class="split-side">
+                    <div class="split-label" id="splitLabelRight">Student Submission</div>
+                    <div class="split-media">
+                        <img id="splitImgRight" src="assests/mudra-practice-2.jpeg" alt="Submission">
+                        <div class="split-play-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="critique-notes-bar">
+                <input type="text" class="critique-note-input" placeholder="Add feedback for this student...">
+                <button class="critique-note-send">Send Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant -->
+    <button class="widget-assistant" id="assistantBtn" aria-label="AI Assistant">
+        <div class="assistant-glow"></div>
+        <svg class="lotus-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 3c0 4-2 6-4 8 2 0 4 2 4 6 0-4 2-6 4-8-2 0-4-2-4-6z"/>
+            <path d="M8 11c-2-2-4-2-6-1 4 1 6 3 6 7 0-4-2-6-6-7 2-1 4-1 6 1z"/>
+            <path d="M16 11c2-2 4-2 6-1-4 1-6 3-6 7 0-4 2-6 6-7-2-1-4-1-6 1z"/>
+        </svg>
+        <span class="assistant-tooltip">AI Assistant</span>
+    </button>
+
+    <!-- AI Chat Panel -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-panel-header">
+            <div class="chat-panel-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 3c0 4-2 6-4 8 2 0 4 2 4 6 0-4 2-6 4-8-2 0-4-2-4-6z"/>
+                </svg>
+                <span>AI Assistant</span>
+            </div>
+            <button class="chat-close-btn" id="chatCloseBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message assistant-msg">
+                <p>Hello! I am your AI teaching assistant. Ask me anything about your classes or students.</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask something...">
+            <button class="chat-send-btn" id="chatSendBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kathakali Bridge — Settings</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ===================================
+       SETTINGS PAGE — STYLES
+       =================================== */
+    .settings-page {
+      margin-left: calc(var(--sidebar-width, 80px) + 40px);
+      margin-top: calc(var(--header-height, 72px) + 28px);
+      margin-right: 40px;
+      margin-bottom: 60px;
+      max-width: 820px;
+    }
+
+    .settings-header {
+      margin-bottom: 32px;
+    }
+    .settings-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--deepwood);
+      margin: 0 0 6px;
+    }
+    .settings-subtitle {
+      font-size: 0.92rem;
+      color: var(--brass-dark);
+    }
+
+    /* ===================================
+       SETTINGS LAYOUT
+       =================================== */
+    .settings-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* Sidebar nav */
+    .settings-nav {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(212,165,116,0.15);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: sticky;
+      top: calc(var(--header-height, 72px) + 20px);
+    }
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--brass-dark);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .settings-nav-item:hover {
+      background: rgba(212,165,116,0.06);
+      color: var(--deepwood);
+    }
+    .settings-nav-item.active {
+      background: rgba(212,165,116,0.08);
+      color: var(--deepwood);
+      border-left-color: var(--brass-light);
+    }
+    .settings-nav-item svg { flex-shrink: 0; }
+
+    /* Settings Panels */
+    .settings-panels { display: flex; flex-direction: column; gap: 0; }
+
+    .settings-panel {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .settings-panel.active { display: flex; }
+
+    .settings-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(212,165,116,0.15);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .settings-card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(212,165,116,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .settings-card-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--deepwood);
+      flex: 1;
+    }
+    .settings-card-subtitle {
+      font-size: 0.8rem;
+      color: var(--brass-dark);
+      margin-top: 2px;
+    }
+    .settings-card-body { padding: 20px 24px; }
+
+    /* Form elements */
+    .settings-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .settings-row.full { grid-template-columns: 1fr; }
+    .settings-row:last-child { margin-bottom: 0; }
+
+    .settings-field { display: flex; flex-direction: column; gap: 6px; }
+    .settings-field label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--brass-dark);
+    }
+    .settings-input,
+    .settings-select,
+    .settings-textarea {
+      padding: 10px 14px;
+      border: 1px solid rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      color: var(--deepwood);
+      background: white;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .settings-input:focus,
+    .settings-select:focus,
+    .settings-textarea:focus {
+      border-color: var(--brass-light);
+      box-shadow: 0 0 0 3px rgba(212,165,116,0.12);
+    }
+    .settings-textarea { resize: vertical; min-height: 90px; }
+
+    /* Avatar upload */
+    .avatar-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0 4px;
+    }
+    .avatar-preview {
+      width: 80px; height: 80px;
+      border-radius: 16px;
+      background: var(--gradient-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: white;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .avatar-preview img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .avatar-upload-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn-upload {
+      padding: 8px 16px;
+      background: rgba(212,165,116,0.1);
+      border: 1px solid rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--deepwood);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-upload:hover {
+      background: rgba(212,165,116,0.18);
+      border-color: var(--brass-light);
+    }
+    .avatar-hint { font-size: 0.75rem; color: var(--brass-dark); }
+
+    /* Toggle switches */
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(212,165,116,0.08);
+    }
+    .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .toggle-row:first-child { padding-top: 0; }
+    .toggle-info { flex: 1; }
+    .toggle-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--deepwood);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .toggle-desc {
+      font-size: 0.78rem;
+      color: var(--brass-dark);
+      line-height: 1.5;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px; height: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .toggle-switch input {
+      opacity: 0; width: 0; height: 0;
+    }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: rgba(212,165,116,0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--brass-light);
+    }
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(20px);
+    }
+
+    /* Art form cards */
+    .art-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .art-form-card {
+      background: rgba(250,248,243,0.8);
+      border: 1px solid rgba(212,165,116,0.2);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .art-form-card:hover {
+      border-color: rgba(212,165,116,0.4);
+      background: white;
+    }
+    .art-form-card.active {
+      border-color: var(--brass-light);
+      background: rgba(212,165,116,0.08);
+      box-shadow: 0 0 0 2px rgba(212,165,116,0.2);
+    }
+    .art-form-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .art-form-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--deepwood);
+    }
+    .art-form-check {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--brass-light);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: white;
+    }
+    .art-form-card.active .art-form-check { display: flex; }
+
+    /* Color palette */
+    .color-palette {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .color-swatch {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: all 0.2s;
+    }
+    .color-swatch.selected {
+      border-color: var(--deepwood);
+      transform: scale(1.1);
+    }
+
+    /* Save button */
+    .settings-save-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 8px;
+    }
+    .btn-discard {
+      padding: 10px 20px;
+      background: none;
+      border: 1px solid rgba(212,165,116,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--brass-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-discard:hover { background: rgba(212,165,116,0.06); }
+    .btn-save {
+      padding: 10px 24px;
+      background: var(--gradient-warm);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-save:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 4px 16px rgba(212,165,116,0.35);
+    }
+
+    /* Danger zone */
+    .danger-zone {
+      border-color: rgba(199,74,60,0.2);
+    }
+    .danger-zone .settings-card-header {
+      border-bottom-color: rgba(199,74,60,0.1);
+    }
+    .danger-zone .settings-card-title { color: #c74a3c; }
+    .btn-danger {
+      padding: 9px 18px;
+      background: rgba(199,74,60,0.06);
+      border: 1px solid rgba(199,74,60,0.25);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #c74a3c;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-danger:hover {
+      background: rgba(199,74,60,0.1);
+      border-color: rgba(199,74,60,0.4);
+    }
+
+    /* Timezone list */
+    .timezone-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .timezone-entry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(250,248,243,0.7);
+      border: 1px solid rgba(212,165,116,0.12);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+    .timezone-entry:hover {
+      border-color: rgba(212,165,116,0.3);
+    }
+    .tz-flag { font-size: 1.2rem; }
+    .tz-entry-info { flex: 1; }
+    .tz-entry-name { font-size: 0.88rem; font-weight: 600; color: var(--deepwood); }
+    .tz-entry-code { font-size: 0.75rem; color: var(--brass-dark); }
+    .tz-entry-remove {
+      background: none; border: none;
+      color: var(--brass-dark);
+      cursor: pointer;
+      font-size: 0.85rem;
+      opacity: 0.5;
+      padding: 4px;
+      transition: opacity 0.15s;
+    }
+    .tz-entry-remove:hover { opacity: 1; color: #c74a3c; }
+
+    /* Settings Toast */
+    .settings-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--deepwood);
+      color: white;
+      padding: 12px 22px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .settings-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .settings-layout { grid-template-columns: 1fr; }
+      .settings-nav { position: static; }
+      .settings-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GLASS HEADER + NAV injected by shared.js -->
+
+<main class="settings-page">
+
+  <div class="settings-header">
+    <h1 class="settings-title">Settings</h1>
+    <p class="settings-subtitle">Manage your profile, preferences, and platform configuration</p>
+  </div>
+
+  <div class="settings-layout">
+
+    <!-- LEFT NAV -->
+    <nav class="settings-nav">
+      <button class="settings-nav-item active" data-panel="profile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Profile
+      </button>
+      <button class="settings-nav-item" data-panel="artforms">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        Art Forms
+      </button>
+      <button class="settings-nav-item" data-panel="notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        Notifications
+      </button>
+      <button class="settings-nav-item" data-panel="timezones">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        Timezones
+      </button>
+      <button class="settings-nav-item" data-panel="appearance">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Appearance
+      </button>
+      <button class="settings-nav-item" data-panel="security">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Security
+      </button>
+    </nav>
+
+    <!-- RIGHT PANELS -->
+    <div class="settings-panels">
+
+      <!-- =============== PROFILE =============== -->
+      <section class="settings-panel active" id="panel-profile">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Public Profile</div>
+              <div class="settings-card-subtitle">Visible to students and parents</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="avatar-upload-area">
+              <div class="avatar-preview" id="avatarPreview">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=teacher42" alt="avatar" id="avatarImg">
+              </div>
+              <div class="avatar-upload-actions">
+                <button class="btn-upload" onclick="document.getElementById('avatarFileInput').click()">
+                  Upload Photo
+                </button>
+                <button class="btn-upload" onclick="document.getElementById('avatarImg').src='https://api.dicebear.com/7.x/avataaars/svg?seed=teacher42'">
+                  Use Generated Avatar
+                </button>
+                <span class="avatar-hint">Recommended: 400×400px · JPG or PNG</span>
+              </div>
+              <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+            </div>
+
+            <div class="settings-row" style="margin-top:20px">
+              <div class="settings-field">
+                <label>First Name</label>
+                <input type="text" class="settings-input" value="Teacher" id="firstName">
+              </div>
+              <div class="settings-field">
+                <label>Last Name</label>
+                <input type="text" class="settings-input" value="Name" id="lastName">
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Display Title</label>
+                <input type="text" class="settings-input" value="Kathakali Master" id="displayTitle">
+              </div>
+              <div class="settings-field">
+                <label>Years of Experience</label>
+                <input type="number" class="settings-input" value="22" min="0" max="70">
+              </div>
+            </div>
+            <div class="settings-row full">
+              <div class="settings-field">
+                <label>Bio / Introduction</label>
+                <textarea class="settings-textarea" id="teacherBio">Trained under the legendary Teacher Ramankutty Nair for over two decades. Specialises in Pacha (green) roles and mudra teaching. Passionate about bringing Kathakali to a global audience through technology.</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Contact Information</div>
+              <div class="settings-card-subtitle">Used for student communication and billing</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Email Address</label>
+                <input type="email" class="settings-input" value="teacher@kathakalibridge.in">
+              </div>
+              <div class="settings-field">
+                <label>Phone (WhatsApp preferred)</label>
+                <input type="tel" class="settings-input" value="+91 98765 43210">
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Location</label>
+                <input type="text" class="settings-input" value="Thiruvananthapuram, Kerala">
+              </div>
+              <div class="settings-field">
+                <label>Language</label>
+                <select class="settings-select">
+                  <option selected>English</option>
+                  <option>Malayalam</option>
+                  <option>Hindi</option>
+                  <option>Tamil</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-save-bar">
+          <button class="btn-discard" onclick="showSettingsToast('Changes discarded')">Discard</button>
+          <button class="btn-save" onclick="showSettingsToast(' Profile saved successfully')">Save Changes</button>
+        </div>
+
+      </section>
+
+      <!-- =============== ART FORMS =============== -->
+      <section class="settings-panel" id="panel-artforms">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Your Art Forms</div>
+              <div class="settings-card-subtitle">Select all the disciplines you teach</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="art-form-grid" id="artFormGrid">
+              <div class="art-form-card active" data-art="kathakali">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Kathakali</div>
+              </div>
+              <div class="art-form-card active" data-art="singing">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Carnatic Singing</div>
+              </div>
+              <div class="art-form-card active" data-art="drawing">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Drawing</div>
+              </div>
+              <div class="art-form-card" data-art="bharatanatyam">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Bharatanatyam</div>
+              </div>
+              <div class="art-form-card" data-art="tabla">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Tabla</div>
+              </div>
+              <div class="art-form-card" data-art="painting">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Painting</div>
+              </div>
+              <div class="art-form-card" data-art="flute">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Flute</div>
+              </div>
+              <div class="art-form-card" data-art="pottery">
+                <div class="art-form-check"></div>
+                <div class="art-form-icon-placeholder"></div>
+                <div class="art-form-name">Pottery</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Session Defaults</div>
+              <div class="settings-card-subtitle">Pre-filled values when creating new classes</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Default Session Duration</label>
+                <select class="settings-select">
+                  <option>30 minutes</option>
+                  <option selected>60 minutes</option>
+                  <option>90 minutes</option>
+                  <option>120 minutes</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Max Students per Session</label>
+                <input type="number" class="settings-input" value="8" min="1" max="30">
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Default Prep Nudge Lead Time</label>
+                <select class="settings-select">
+                  <option>30 minutes before</option>
+                  <option selected>1 hour before</option>
+                  <option>2 hours before</option>
+                  <option>1 day before</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Preferred Meeting Platform</label>
+                <select class="settings-select">
+                  <option selected>Kathakali Bridge Studio</option>
+                  <option>Google Meet</option>
+                  <option>Zoom</option>
+                  <option>Jitsi</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-save-bar">
+          <button class="btn-discard" onclick="showSettingsToast('Changes discarded')">Discard</button>
+          <button class="btn-save" onclick="showSettingsToast(' Art form preferences saved')">Save Changes</button>
+        </div>
+
+      </section>
+
+      <!-- =============== NOTIFICATIONS =============== -->
+      <section class="settings-panel" id="panel-notifications">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Push Notifications</div>
+              <div class="settings-card-subtitle">In-app and browser notifications</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Assignment submissions</span>
+                <span class="toggle-desc">Notify when a student submits a video or assignment</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Class reminders</span>
+                <span class="toggle-desc">Remind you 15 minutes before a session starts</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Student achievement milestones</span>
+                <span class="toggle-desc">When a student reaches a mudra accuracy threshold</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Parent messages</span>
+                <span class="toggle-desc">Notify when parents send messages or inquiries</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Platform announcements</span>
+                <span class="toggle-desc">Product updates, maintenance notices from Kathakali Bridge</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Email Notifications</div>
+              <div class="settings-card-subtitle">Sent to <a href="#" class="teacher-email"><span class="__cf_email__" data-cfemail="2c58494d4f44495e6c474d58444d474d40454e5e45484b49024542">[email&#160;protected]</span></a></div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Weekly summary report</span>
+                <span class="toggle-desc">Every Monday: attendance, accuracy trends, upcoming classes</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">New student enrollments</span>
+                <span class="toggle-desc">Email when a new student joins your class</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">AI mudra analysis ready</span>
+                <span class="toggle-desc">When batch mudra analysis reports are processed</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Student Pre-Class Nudges</div>
+              <div class="settings-card-subtitle">Default nudges sent to students before each class</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Enable pre-class nudges globally</span>
+                <span class="toggle-desc">You can override this per-class in the schedule director mode</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="settings-row" style="margin-top:16px">
+              <div class="settings-field">
+                <label>Default lead time</label>
+                <select class="settings-select">
+                  <option>30 minutes</option>
+                  <option selected>1 hour</option>
+                  <option>2 hours</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Delivery channel</label>
+                <select class="settings-select">
+                  <option selected>WhatsApp + In-app</option>
+                  <option>In-app only</option>
+                  <option>Email only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-save-bar">
+          <button class="btn-discard" onclick="showSettingsToast('Changes discarded')">Discard</button>
+          <button class="btn-save" onclick="showSettingsToast(' Notification preferences saved')">Save Changes</button>
+        </div>
+
+      </section>
+
+      <!-- =============== TIMEZONES =============== -->
+      <section class="settings-panel" id="panel-timezones">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Your Timezone</div>
+              <div class="settings-card-subtitle">All class times are shown in your local timezone</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Primary Timezone</label>
+                <select class="settings-select">
+                  <option selected>Asia/Kolkata (IST, UTC+5:30)</option>
+                  <option>Europe/London (GMT, UTC+0)</option>
+                  <option>America/New_York (EST, UTC-5)</option>
+                  <option>Asia/Singapore (SGT, UTC+8)</option>
+                  <option>America/Los_Angeles (PST, UTC-8)</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Time Format</label>
+                <select class="settings-select">
+                  <option selected>12-hour (1:30 PM)</option>
+                  <option>24-hour (13:30)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Student Timezone Display</div>
+              <div class="settings-card-subtitle">Clocks shown in the Schedule Timezone Pulse Bar</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="timezone-list" id="tzDisplayList">
+              <div class="timezone-entry">
+                <span class="tz-flag">IN</span>
+                <div class="tz-entry-info">
+                  <div class="tz-entry-name">India Standard Time</div>
+                  <div class="tz-entry-code">IST · UTC+5:30 · Your Time</div>
+                </div>
+                <span style="font-size:0.72rem;color:var(--brass-dark);padding:3px 8px;background:rgba(212,165,116,0.1);border-radius:8px">Primary</span>
+              </div>
+              <div class="timezone-entry">
+                <span class="tz-flag">IN</span>
+                <div class="tz-entry-info">
+                  <div class="tz-entry-name">Greenwich Mean Time</div>
+                  <div class="tz-entry-code">GMT · UTC+0 · London</div>
+                </div>
+                <button class="tz-entry-remove" onclick="removeTzEntry(this)"></button>
+              </div>
+              <div class="timezone-entry">
+                <span class="tz-flag">IN</span>
+                <div class="tz-entry-info">
+                  <div class="tz-entry-name">Eastern Standard Time</div>
+                  <div class="tz-entry-code">EST · UTC-5 · New York</div>
+                </div>
+                <button class="tz-entry-remove" onclick="removeTzEntry(this)"></button>
+              </div>
+              <div class="timezone-entry">
+                <span class="tz-flag">IN</span>
+                <div class="tz-entry-info">
+                  <div class="tz-entry-name">Singapore Time</div>
+                  <div class="tz-entry-code">SGT · UTC+8 · Singapore</div>
+                </div>
+                <button class="tz-entry-remove" onclick="removeTzEntry(this)"></button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <select class="settings-select" id="tzAddSelect" style="width:100%;margin-bottom:10px">
+                <option value="">— Add a timezone —</option>
+                <option value="PST"> PST · Pacific Standard Time · Los Angeles</option>
+                <option value="CET"> CET · Central European Time · Berlin</option>
+                <option value="JST"> JST · Japan Standard Time · Tokyo</option>
+                <option value="AEST"> AEST · Australian Eastern Time · Sydney</option>
+                <option value="ART"> GST · Gulf Standard Time · Dubai</option>
+              </select>
+              <button class="btn-upload" onclick="addTimezone()" style="width:100%;justify-content:center">+ Add Timezone</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-save-bar">
+          <button class="btn-discard" onclick="showSettingsToast('Changes discarded')">Discard</button>
+          <button class="btn-save" onclick="showSettingsToast(' Timezone settings saved')">Save Changes</button>
+        </div>
+
+      </section>
+
+      <!-- =============== APPEARANCE =============== -->
+      <section class="settings-panel" id="panel-appearance">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Theme & Colors</div>
+              <div class="settings-card-subtitle">Personalise your dashboard palette</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-field" style="margin-bottom:20px">
+              <label>Accent Colour</label>
+              <div class="color-palette" id="colorPalette">
+                <div class="color-swatch selected" data-color="terracotta" style="background:#d4793a" title="Terracotta (Default)"></div>
+                <div class="color-swatch" data-color="palmgreen" style="background:#5a6f4c" title="Palm Green"></div>
+                <div class="color-swatch" data-color="indigo" style="background:#4a5580" title="Kerala Indigo"></div>
+                <div class="color-swatch" data-color="lotus" style="background:#c06080" title="Lotus Pink"></div>
+                <div class="color-swatch" data-color="midnight" style="background:#2d2438" title="Midnight"></div>
+                <div class="color-swatch" data-color="sandalwood" style="background:#b09060" title="Sandalwood"></div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>Dashboard Font</label>
+                <select class="settings-select">
+                  <option selected>Philosopher + Cormorant Garamond (Default)</option>
+                  <option>Playfair Display + Lora</option>
+                  <option>EB Garamond (Classic)</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Interface Density</label>
+                <select class="settings-select">
+                  <option>Compact</option>
+                  <option selected>Comfortable (Default)</option>
+                  <option>Spacious</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Animations & Motion</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Enable animations</span>
+                <span class="toggle-desc">Page transitions, hover effects, panel reveals</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Reduce motion (accessibility)</span>
+                <span class="toggle-desc">Respect system "Reduce Motion" setting</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox">
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Glass morphism effects</span>
+                <span class="toggle-desc">Frosted glass header and panels (requires GPU)</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-save-bar">
+          <button class="btn-discard" onclick="showSettingsToast('Changes discarded')">Discard</button>
+          <button class="btn-save" onclick="showSettingsToast(' Appearance preferences saved')">Save Changes</button>
+        </div>
+
+      </section>
+
+      <!-- =============== SECURITY =============== -->
+      <section class="settings-panel" id="panel-security">
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Password & Authentication</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-row full">
+              <div class="settings-field">
+                <label>Current Password</label>
+                <input type="password" class="settings-input" placeholder="Enter current password">
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-field">
+                <label>New Password</label>
+                <input type="password" class="settings-input" placeholder="Min. 8 characters">
+              </div>
+              <div class="settings-field">
+                <label>Confirm New Password</label>
+                <input type="password" class="settings-input" placeholder="Repeat new password">
+              </div>
+            </div>
+            <div class="settings-save-bar" style="padding-top:4px">
+              <button class="btn-save" onclick="showSettingsToast(' Password updated')">Update Password</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Two-Factor Authentication</div>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Enable 2FA via WhatsApp OTP</span>
+                <span class="toggle-desc">An OTP is sent to +91 98765 43210 when you log in</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Trusted device for 30 days</span>
+                <span class="toggle-desc">Skip 2FA on devices you've verified recently</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <div class="toggle-track"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card danger-zone">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Danger Zone</div>
+              <div class="settings-card-subtitle">These actions are permanent and cannot be undone</div>
+            </div>
+          </div>
+          <div class="settings-card-body" style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn-danger" onclick="showSettingsToast(' Please contact support to export data')">
+              Export All Data
+            </button>
+            <button class="btn-danger" onclick="if(confirm('Delete all session history? This cannot be undone.')) showSettingsToast('Session history deleted')">
+              Delete Session History
+            </button>
+            <button class="btn-danger" onclick="if(confirm('Permanently delete your account? This CANNOT be undone.')) showSettingsToast('Account deletion requested')">
+              Delete Account
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /settings-panels -->
+
+  </div><!-- /settings-layout -->
+
+</main>
+
+<!-- SETTINGS TOAST -->
+<div class="settings-toast" id="settingsToast"></div>
+
+<!-- SHARED HEADER + NAV -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="shared.js"></script>
+
+<script>
+  // ===================================
+  // SETTINGS PAGE JS
+  // ===================================
+
+  // Panel navigation
+  document.querySelectorAll('.settings-nav-item').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.settings-nav-item').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const panel = this.dataset.panel;
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + panel)?.classList.add('active');
+    });
+  });
+
+  // Art form toggle
+  document.querySelectorAll('.art-form-card').forEach(card => {
+    card.addEventListener('click', function () {
+      this.classList.toggle('active');
+    });
+  });
+
+  // Color swatches
+  document.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.addEventListener('click', function () {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      this.classList.add('selected');
+      showSettingsToast(' Colour theme updated');
+    });
+  });
+
+  // Timezone remove
+  window.removeTzEntry = function(btn) {
+    btn.closest('.timezone-entry').remove();
+    showSettingsToast('Timezone removed');
+  };
+
+  // Timezone add
+  window.addTimezone = function() {
+    const sel = document.getElementById('tzAddSelect');
+    const txt = sel.options[sel.selectedIndex].text;
+    if (!sel.value) return;
+    const list = document.getElementById('tzDisplayList');
+    const entry = document.createElement('div');
+    entry.className = 'timezone-entry';
+    entry.innerHTML = `
+      <span class="tz-flag">${txt.split(' ')[0]}</span>
+      <div class="tz-entry-info">
+        <div class="tz-entry-name">${txt.split('·')[1]?.trim() || txt}</div>
+        <div class="tz-entry-code">${sel.value} · ${txt.split('·')[2]?.trim() || ''}</div>
+      </div>
+      <button class="tz-entry-remove" onclick="removeTzEntry(this)"></button>
+    `;
+    list.appendChild(entry);
+    sel.value = '';
+    showSettingsToast('Timezone added');
+  };
+
+  // Avatar upload preview
+  document.getElementById('avatarFileInput')?.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      documen
