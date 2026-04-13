@@ -1,6 +1,5 @@
 <?php
-// auth.php — Include at the TOP of every .php page. One line: require_once 'auth.php';
-// Do NOT include it twice on the same page.
+// auth.php — require_once this ONCE at the top of every protected page.
 
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/db.php';
@@ -15,18 +14,17 @@ session_set_cookie_params([
 ]);
 session_start();
 
-// DEMO MODE: auto-login as teacher_id=1
-// Remove this block and add a real login page later
+// If not logged in, redirect to login page
 if (!isset($_SESSION['teacher_id'])) {
-    $_SESSION['teacher_id'] = 1;
+    header('Location: login.php');
+    exit;
 }
 
-// Load teacher from DB
+// Load teacher row from DB
 $teacher = null;
 try {
     $stmt = DB::conn()->prepare(
-        'SELECT teacher_id, name, specialty, email, initials, moodle_user_id, moodle_token
-         FROM teachers WHERE teacher_id = ?'
+        'SELECT * FROM teachers WHERE teacher_id = ?'
     );
     $stmt->execute([$_SESSION['teacher_id']]);
     $teacher = $stmt->fetch();
@@ -36,25 +34,26 @@ try {
 
 if (!$teacher) {
     session_destroy();
-    die('<div style="font-family:sans-serif;padding:2rem;max-width:600px">'
-      . '<h2 style="color:#c0392b">Setup required</h2>'
-      . '<p>No teacher record found in the database.</p>'
-      . '<p>Run this command in your terminal:</p>'
-      . '<pre style="background:#f4f4f4;padding:12px;border-radius:6px">'
-      . 'mysql -u root -p &lt; schema.sql</pre>'
-      . '<p style="color:#666">Then refresh this page.</p></div>');
+    header('Location: login.php?error=session_expired');
+    exit;
 }
 
-// Writes window.__KB into the HTML so shared.js reads live teacher data.
-// Call: echo kb_inject_script($teacher); just before </head>
+// Writes window.__KB so shared.js picks up live teacher data
 function kb_inject_script($teacher) {
+    $initials = '';
+    $parts = explode(' ', trim($teacher['name'] ?? ''));
+    foreach ($parts as $p) { if ($p) $initials .= strtoupper($p[0]); }
+    $initials = substr($initials, 0, 2) ?: 'T';
+
     $data = json_encode([
         'teacher' => [
             'id'        => (int)$teacher['teacher_id'],
             'name'      => $teacher['name'],
-            'specialty' => $teacher['specialty'],
-            'initials'  => $teacher['initials'],
+            'specialty' => $teacher['specialty'] ?? 'Instructor',
+            'initials'  => $initials,
             'email'     => $teacher['email'],
+            'avatar'    => $teacher['avatar_path'] ?? '',
+            'art_form'  => $teacher['art_form']    ?? '',
         ]
     ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     return '<script>window.__KB=' . $data . ';</script>';

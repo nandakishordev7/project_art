@@ -9,15 +9,13 @@
   'use strict';
 
   // ── DATA SOURCE ──────────────────────────────────────────────
-  // Priority: window.__KB (injected by auth.php PHP) > hardcoded fallback.
-  // When PHP is active, auth.php writes window.__KB on every page load.
-  // The fallback values below are used only when running as plain HTML.
   var _KB = (typeof window !== 'undefined' && window.__KB) ? window.__KB : {};
 
   var TEACHER = {
     name:      (_KB.teacher && _KB.teacher.name)      || 'Teacher Name',
     specialty: (_KB.teacher && _KB.teacher.specialty)  || 'Kathakali Instructor',
     initials:  (_KB.teacher && _KB.teacher.initials)   || 'TN',
+    avatar:    (_KB.teacher && _KB.teacher.avatar)     || '',
   };
 
   var NOTIFICATIONS = [
@@ -31,13 +29,10 @@
   ];
 
   // ── LIVE DATA LOADER ─────────────────────────────────────────
-  // Calls api/teacher.php when PHP is present.
-  // Silently no-ops when running as plain HTML files.
   function loadLiveData() {
     fetch('api/teacher.php', { credentials: 'same-origin' })
       .then(function(res) { return res.ok ? res.json() : Promise.reject(); })
       .then(function(data) {
-        // Update teacher name/role from DB
         if (data.teacher) {
           TEACHER.name      = data.teacher.name      || TEACHER.name;
           TEACHER.specialty = data.teacher.specialty  || TEACHER.specialty;
@@ -48,13 +43,11 @@
           if (nameEl) nameEl.textContent = TEACHER.name;
           if (roleEl) roleEl.textContent = TEACHER.specialty;
           if (initEl) initEl.textContent = TEACHER.initials;
-          // Also update profile dropdown
           var pName = document.querySelector('.sh-profile-name');
           var pRole = document.querySelector('.sh-profile-role');
           if (pName) pName.textContent = TEACHER.name;
           if (pRole) pRole.textContent = TEACHER.specialty;
         }
-        // Replace notification list with live DB data
         if (data.notifications && data.notifications.length) {
           NOTIFICATIONS = data.notifications.map(function(n) {
             return { id: n.notif_id, text: n.text, time: n.time, unread: !!n.is_unread };
@@ -87,68 +80,54 @@
       });
   }
 
+  // ── ACTIVE PAGE DETECTION ─────────────────────────────────────
   function getActivePage() {
-    const path = window.location.pathname.split('/').pop() || 'teacher-dashboard.html';
+    var path = window.location.pathname.split('/').pop() || 'teacher-dashboard.php';
     if (path.includes('schedule'))  return 'schedule';
     if (path.includes('students'))  return 'students';
     if (path.includes('settings'))  return 'settings';
     return 'dashboard';
   }
 
+  // ── INJECT HEADER ─────────────────────────────────────────────
   function injectHeader() {
-    const existing = document.querySelector('.glass-header');
+    var existing = document.querySelector('.glass-header');
     if (existing) existing.remove();
 
-    const header = document.createElement('header');
+    var header = document.createElement('header');
     header.className = 'glass-header';
     header.innerHTML = `
-      <!-- LEFT: Brand Logos -->
       <div class="header-logos">
-        <!-- DUK Logo -->
-        <a href="teacher-dashboard.html" class="header-logo-link" aria-label="Digital University Kerala" title="Digital University Kerala">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 44" width="130" height="44" aria-hidden="true">
-            <!-- C arc (blue) -->
+        <a href="teacher-dashboard.php" class="header-logo-link" aria-label="Digital University Kerala">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 44" width="130" height="44">
             <path d="M18 6 A14 14 0 1 0 18 38" fill="none" stroke="#0366B0" stroke-width="4" stroke-linecap="round"/>
-            <!-- K shape (teal) -->
             <line x1="26" y1="6" x2="26" y2="38" stroke="#02B393" stroke-width="4" stroke-linecap="round"/>
             <line x1="26" y1="22" x2="36" y2="6" stroke="#02B393" stroke-width="4" stroke-linecap="round"/>
             <line x1="26" y1="22" x2="36" y2="38" stroke="#02B393" stroke-width="4" stroke-linecap="round"/>
-            <!-- Circuit nodes (lime green) -->
             <circle cx="42" cy="12" r="2.2" fill="#A3CE47"/>
             <circle cx="42" cy="22" r="2.2" fill="#A3CE47"/>
             <circle cx="42" cy="32" r="2.2" fill="#A3CE47"/>
             <line x1="38" y1="12" x2="42" y2="12" stroke="#A3CE47" stroke-width="1.4"/>
             <line x1="38" y1="22" x2="42" y2="22" stroke="#A3CE47" stroke-width="1.4"/>
             <line x1="38" y1="32" x2="42" y2="32" stroke="#A3CE47" stroke-width="1.4"/>
-            <!-- Text block -->
             <text x="48" y="16" font-family="Raleway,sans-serif" font-weight="800" font-size="7.5" fill="#0366B0" letter-spacing="0.5">DIGITAL</text>
             <text x="48" y="26" font-family="Raleway,sans-serif" font-weight="800" font-size="7.5" fill="#0366B0" letter-spacing="0.5">UNIVERSITY</text>
             <text x="48" y="36" font-family="Raleway,sans-serif" font-weight="800" font-size="7.5" fill="#0366B0" letter-spacing="0.5">KERALA</text>
           </svg>
         </a>
-
-        <!-- Divider -->
         <div class="header-logo-divider"></div>
-
-        <!-- Kathakali Bridge Logo -->
-        <a href="teacher-dashboard.html" class="header-logo-link" aria-label="Kathakali Bridge" title="Kathakali Bridge">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 44" width="130" height="44" aria-hidden="true">
-            <!-- Mudra gesture icon -->
+        <a href="teacher-dashboard.php" class="header-logo-link" aria-label="Digital Arts School">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 44" width="130" height="44">
             <circle cx="22" cy="22" r="15" fill="none" stroke="#0366B0" stroke-width="1.8"/>
-            <!-- Inner mudra arcs -->
             <path d="M14 22 Q22 12 30 22" fill="none" stroke="#02B393" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M14 22 Q22 32 30 22" fill="none" stroke="#A3CE47" stroke-width="2.2" stroke-linecap="round"/>
-            <!-- Center dot -->
             <circle cx="22" cy="22" r="2.5" fill="#0366B0"/>
-            <!-- Text: Kathakali -->
-            <text x="42" y="19" font-family="Raleway,sans-serif" font-weight="800" font-size="11" fill="#0366B0" letter-spacing="-0.2">Kathakali</text>
-            <!-- Text: Bridge -->
-            <text x="42" y="34" font-family="Raleway,sans-serif" font-weight="400" font-size="11" fill="#02B393" letter-spacing="0.3">Bridge</text>
+            <text x="42" y="19" font-family="Raleway,sans-serif" font-weight="800" font-size="11" fill="#0366B0" letter-spacing="-0.2">Digital Arts</text>
+            <text x="42" y="34" font-family="Raleway,sans-serif" font-weight="400" font-size="11" fill="#02B393" letter-spacing="0.3">School</text>
           </svg>
         </a>
       </div>
 
-      <!-- CENTER: Search -->
       <div class="search-container">
         <button class="search-btn" id="sharedSearchBtn">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -159,11 +138,10 @@
         </button>
       </div>
 
-      <!-- RIGHT: Teacher identity + actions -->
       <div class="header-actions">
         <div class="teacher-identity-compact">
-          <div class="avatar-ring-compact">
-            <span class="avatar-initials">${TEACHER.initials}</span>
+          <div class="avatar-ring-compact" id="sharedAvatarRing">
+            <span class="avatar-initials" id="sharedAvatarInitials">${TEACHER.initials}</span>
           </div>
           <div class="teacher-info-compact">
             <span class="teacher-name" id="sharedTeacherName">${TEACHER.name}</span>
@@ -190,16 +168,17 @@
     document.body.prepend(header);
   }
 
+  // ── INJECT NAV ────────────────────────────────────────────────
   function injectNav() {
-    const existing = document.querySelector('.floating-nav');
+    var existing = document.querySelector('.floating-nav');
     if (existing) existing.remove();
 
-    const active = getActivePage();
-    const nav = document.createElement('nav');
+    var active = getActivePage();
+    var nav = document.createElement('nav');
     nav.className = 'floating-nav';
     nav.innerHTML = `
       <div class="nav-items">
-        <a href="teacher-dashboard.html" class="nav-item ${active === 'dashboard' ? 'active' : ''}" data-label="Dashboard" aria-label="Dashboard">
+        <a href="teacher-dashboard.php" class="nav-item ${active === 'dashboard' ? 'active' : ''}" data-label="Dashboard" aria-label="Dashboard">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -233,16 +212,19 @@
       </div>
     `;
     document.body.appendChild(nav);
-    nav.querySelector('#sharedLogoutBtn')?.addEventListener('click', function (e) {
+    nav.querySelector('#sharedLogoutBtn').addEventListener('click', function (e) {
       e.preventDefault();
-      if (confirm('Log out of Kathakali Bridge?')) window.location.href = 'teacher-dashboard.html';
+      if (confirm('Log out of Digital Arts School?')) {
+        window.location.href = 'login.php';
+      }
     });
   }
 
+  // ── INJECT NOTIFICATION PANEL ─────────────────────────────────
   function injectNotificationPanel() {
     if (document.getElementById('sharedNotifPanel')) return;
-    const unreadCount = NOTIFICATIONS.filter(n => n.unread).length;
-    const panel = document.createElement('div');
+    var unreadCount = NOTIFICATIONS.filter(function(n) { return n.unread; }).length;
+    var panel = document.createElement('div');
     panel.id = 'sharedNotifPanel';
     panel.className = 'sh-notif-panel';
     panel.innerHTML = `
@@ -252,35 +234,38 @@
         <button class="sh-notif-mark" id="sharedMarkAll">Mark all read</button>
       </div>
       <div class="sh-notif-list">
-        ${NOTIFICATIONS.map(n => `
-          <div class="sh-notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
-            <div class="sh-notif-indicator"></div>
-            <div class="sh-notif-body">
-              <p class="sh-notif-text">${n.text}</p>
-              <span class="sh-notif-time">${n.time}</span>
-            </div>
-          </div>`).join('')}
+        ${NOTIFICATIONS.map(function(n) {
+          return '<div class="sh-notif-item ' + (n.unread ? 'unread' : '') + '" data-id="' + n.id + '">'
+            + '<div class="sh-notif-indicator"></div>'
+            + '<div class="sh-notif-body">'
+            + '<p class="sh-notif-text">' + n.text + '</p>'
+            + '<span class="sh-notif-time">' + n.time + '</span>'
+            + '</div></div>';
+        }).join('')}
       </div>
     `;
     document.body.appendChild(panel);
-    panel.querySelector('#sharedMarkAll')?.addEventListener('click', function () {
-      panel.querySelectorAll('.sh-notif-item.unread').forEach(function(el) { el.classList.remove('unread'); });
+
+    // ✅ FIX: single clean addEventListener — no orphaned braces
+    panel.querySelector('#sharedMarkAll').addEventListener('click', function () {
+      panel.querySelectorAll('.sh-notif-item.unread').forEach(function(el) {
+        el.classList.remove('unread');
+      });
       var badge = panel.querySelector('.sh-notif-badge');
       if (badge) badge.textContent = '0 new';
       var dot = document.getElementById('sharedNotifDot');
       if (dot) dot.classList.add('sh-dot-hidden');
-      // Persist to DB via PHP (fire-and-forget; no-op on plain HTML)
       fetch('api/teacher.php?action=mark_read', {
-        method: 'POST', credentials: 'same-origin'
+        method: 'POST',
+        credentials: 'same-origin'
       }).catch(function() {});
-    });
-      } catch (_) {}
     });
   }
 
+  // ── INJECT PROFILE DROPDOWN ───────────────────────────────────
   function injectProfileDropdown() {
     if (document.getElementById('sharedProfileMenu')) return;
-    const menu = document.createElement('div');
+    var menu = document.createElement('div');
     menu.id = 'sharedProfileMenu';
     menu.className = 'sh-profile-menu';
     menu.innerHTML = `
@@ -298,7 +283,7 @@
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg> Settings
         </a>
-        <a href="teacher-dashboard.html" class="sh-profile-item">
+        <a href="teacher-dashboard.php" class="sh-profile-item">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -314,16 +299,19 @@
       </div>
     `;
     document.body.appendChild(menu);
-    menu.querySelector('#sharedProfileLogout')?.addEventListener('click', function (e) {
+    menu.querySelector('#sharedProfileLogout').addEventListener('click', function (e) {
       e.preventDefault();
       closeProfileMenu();
-      if (confirm('Log out of Kathakali Bridge?')) window.location.href = 'teacher-dashboard.html';
+      if (confirm('Log out of Digital Arts School?')) {
+        window.location.href = 'login.php';
+      }
     });
   }
 
+  // ── INJECT SEARCH OVERLAY ─────────────────────────────────────
   function injectSearchOverlay() {
     if (document.getElementById('sharedSearchOverlay')) return;
-    const overlay = document.createElement('div');
+    var overlay = document.createElement('div');
     overlay.id = 'sharedSearchOverlay';
     overlay.className = 'sh-search-overlay';
     overlay.innerHTML = `
@@ -337,7 +325,7 @@
         </div>
         <div class="sh-search-suggestions">
           <div class="sh-search-group">Quick Links</div>
-          <a href="teacher-dashboard.html" class="sh-search-item">Dashboard</a>
+          <a href="teacher-dashboard.php" class="sh-search-item">Dashboard</a>
           <a href="schedule.html" class="sh-search-item">Schedule</a>
           <a href="students.html" class="sh-search-item">Students</a>
           <a href="settings.html" class="sh-search-item">Settings</a>
@@ -350,64 +338,82 @@
     });
   }
 
+  // ── WIRE EVENTS ───────────────────────────────────────────────
   function wireEvents() {
-    document.getElementById('sharedNotifBtn')?.addEventListener('click', function (e) {
+    document.getElementById('sharedNotifBtn').addEventListener('click', function (e) {
       e.stopPropagation(); toggleNotifPanel();
     });
-    document.getElementById('sharedProfileBtn')?.addEventListener('click', function (e) {
+    document.getElementById('sharedProfileBtn').addEventListener('click', function (e) {
       e.stopPropagation(); toggleProfileMenu();
     });
-    document.getElementById('sharedSearchBtn')?.addEventListener('click', openSearch);
+    document.getElementById('sharedSearchBtn').addEventListener('click', openSearch);
     document.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
       if (e.key === 'Escape') { closeSearch(); closeNotifPanel(); closeProfileMenu(); }
     });
     document.addEventListener('click', function () { closeNotifPanel(); closeProfileMenu(); });
-    const unread = NOTIFICATIONS.filter(n => n.unread).length;
-    if (unread === 0) document.getElementById('sharedNotifDot')?.classList.add('sh-dot-hidden');
+    var unread = NOTIFICATIONS.filter(function(n) { return n.unread; }).length;
+    if (unread === 0) {
+      var dot = document.getElementById('sharedNotifDot');
+      if (dot) dot.classList.add('sh-dot-hidden');
+    }
   }
 
   function toggleNotifPanel() {
-    const panel = document.getElementById('sharedNotifPanel');
-    const btn = document.getElementById('sharedNotifBtn');
+    var panel = document.getElementById('sharedNotifPanel');
+    var btn   = document.getElementById('sharedNotifBtn');
     if (!panel) return;
-    const isOpen = panel.classList.contains('open');
+    var isOpen = panel.classList.contains('open');
     closeProfileMenu();
     panel.classList.toggle('open', !isOpen);
     if (btn && !isOpen) {
-      const r = btn.getBoundingClientRect();
-      panel.style.top = (r.bottom + 8) + 'px';
+      var r = btn.getBoundingClientRect();
+      panel.style.top   = (r.bottom + 8) + 'px';
       panel.style.right = (window.innerWidth - r.right) + 'px';
     }
   }
-  function closeNotifPanel() { document.getElementById('sharedNotifPanel')?.classList.remove('open'); }
+  function closeNotifPanel() {
+    var p = document.getElementById('sharedNotifPanel');
+    if (p) p.classList.remove('open');
+  }
   function toggleProfileMenu() {
-    const menu = document.getElementById('sharedProfileMenu');
-    const btn = document.getElementById('sharedProfileBtn');
+    var menu = document.getElementById('sharedProfileMenu');
+    var btn  = document.getElementById('sharedProfileBtn');
     if (!menu) return;
-    const isOpen = menu.classList.contains('open');
+    var isOpen = menu.classList.contains('open');
     closeNotifPanel();
     menu.classList.toggle('open', !isOpen);
     if (btn && !isOpen) {
-      const r = btn.getBoundingClientRect();
-      menu.style.top = (r.bottom + 8) + 'px';
+      var r = btn.getBoundingClientRect();
+      menu.style.top   = (r.bottom + 8) + 'px';
       menu.style.right = (window.innerWidth - r.right) + 'px';
     }
   }
-  function closeProfileMenu() { document.getElementById('sharedProfileMenu')?.classList.remove('open'); }
-  function openSearch() {
-    document.getElementById('sharedSearchOverlay')?.classList.add('open');
-    setTimeout(() => document.getElementById('sharedSearchInput')?.focus(), 50);
+  function closeProfileMenu() {
+    var m = document.getElementById('sharedProfileMenu');
+    if (m) m.classList.remove('open');
   }
-  function closeSearch() { document.getElementById('sharedSearchOverlay')?.classList.remove('open'); }
+  function openSearch() {
+    var o = document.getElementById('sharedSearchOverlay');
+    if (o) o.classList.add('open');
+    setTimeout(function() {
+      var i = document.getElementById('sharedSearchInput');
+      if (i) i.focus();
+    }, 50);
+  }
+  function closeSearch() {
+    var o = document.getElementById('sharedSearchOverlay');
+    if (o) o.classList.remove('open');
+  }
 
-  window.sharedOpenSearch = openSearch;
+  window.sharedOpenSearch        = openSearch;
   window.sharedOpenNotifications = toggleNotifPanel;
-  window.sharedOpenProfile = toggleProfileMenu;
+  window.sharedOpenProfile       = toggleProfileMenu;
 
+  // ── INJECT STYLES ─────────────────────────────────────────────
   function injectSharedStyles() {
     if (document.getElementById('sharedStyles')) return;
-    const s = document.createElement('style');
+    var s = document.createElement('style');
     s.id = 'sharedStyles';
     s.textContent = `
       .avatar-initials {
@@ -431,14 +437,14 @@
       .sh-notif-badge{font-size:0.7rem;font-weight:700;padding:2px 8px;background:rgba(2,179,147,0.15);color:#015e4a;border-radius:20px;}
       .sh-notif-mark{font-size:0.73rem;color:var(--brass-dark,#0255a0);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;}
       .sh-notif-list{max-height:360px;overflow-y:auto;}
-      .sh-notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;cursor:pointer;transition:background 0.15s;position:relative;}
+      .sh-notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;cursor:pointer;transition:background 0.15s;}
       .sh-notif-item:hover{background:rgba(3,102,176,0.03);}
       .sh-notif-item.unread{background:rgba(3,102,176,0.03);}
       .sh-notif-indicator{width:7px;height:7px;border-radius:50%;background:transparent;flex-shrink:0;margin-top:6px;transition:background 0.2s;}
-      .sh-notif-item.unread .sh-notif-indicator{background:var(--brass-light,#02B393);}
+      .sh-notif-item.unread .sh-notif-indicator{background:#02B393;}
       .sh-notif-body{flex:1;}
       .sh-notif-text{font-size:0.86rem;color:var(--deepwood,#2d241f);margin:0 0 3px;line-height:1.45;}
-      .sh-notif-time{font-size:0.73rem;color:var(--brass-dark,#0255a0);}
+      .sh-notif-time{font-size:0.73rem;color:#0255a0;}
 
       .sh-profile-menu {
         position:fixed;width:230px;background:white;border-radius:14px;
@@ -449,11 +455,11 @@
       }
       .sh-profile-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
       .sh-profile-head{display:flex;align-items:center;gap:11px;padding:15px 16px;background:linear-gradient(135deg,rgba(3,102,176,0.07),rgba(2,179,147,0.04));border-bottom:1px solid rgba(3,102,176,0.08);}
-      .sh-profile-avatar{width:38px;height:38px;border-radius:10px;background:var(--gradient-warm,linear-gradient(135deg,#0366B0,#02B393));display:flex;align-items:center;justify-content:center;font-family:var(--font-display,'Raleway',sans-serif);font-weight:700;font-size:0.8rem;color:white;flex-shrink:0;}
-      .sh-profile-name{font-family:var(--font-display,'Raleway',sans-serif);font-weight:700;font-size:0.88rem;color:var(--deepwood,#2d241f);}
-      .sh-profile-role{font-size:0.72rem;color:var(--brass-dark,#0255a0);margin-top:1px;}
+      .sh-profile-avatar{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0366B0,#02B393);display:flex;align-items:center;justify-content:center;font-family:'Raleway',sans-serif;font-weight:700;font-size:0.8rem;color:white;flex-shrink:0;}
+      .sh-profile-name{font-family:'Raleway',sans-serif;font-weight:700;font-size:0.88rem;color:#2d241f;}
+      .sh-profile-role{font-size:0.72rem;color:#0255a0;margin-top:1px;}
       .sh-profile-items{padding:6px 0;}
-      .sh-profile-item{display:flex;align-items:center;gap:9px;padding:10px 16px;font-size:0.86rem;color:var(--deepwood,#2d241f);text-decoration:none;cursor:pointer;transition:background 0.15s;}
+      .sh-profile-item{display:flex;align-items:center;gap:9px;padding:10px 16px;font-size:0.86rem;color:#2d241f;text-decoration:none;cursor:pointer;transition:background 0.15s;}
       .sh-profile-item:hover{background:rgba(3,102,176,0.05);}
       .sh-profile-item.sh-danger{color:#c74a3c;}
       .sh-profile-item.sh-danger:hover{background:rgba(199,74,60,0.06);}
@@ -468,12 +474,12 @@
       .sh-search-modal{width:540px;background:white;border-radius:18px;box-shadow:0 32px 80px rgba(61,47,40,0.22);overflow:hidden;transform:translateY(-16px);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);}
       .sh-search-overlay.open .sh-search-modal{transform:translateY(0);}
       .sh-search-input-wrap{display:flex;align-items:center;gap:11px;padding:17px 18px;border-bottom:1px solid rgba(3,102,176,0.08);}
-      .sh-search-input-wrap svg{color:var(--brass-dark,#0255a0);flex-shrink:0;}
-      #sharedSearchInput{flex:1;border:none;outline:none;font-family:var(--font-body,'Work Sans',sans-serif);font-size:1rem;color:var(--deepwood,#2d241f);background:transparent;}
-      .sh-search-input-wrap kbd{font-size:0.7rem;padding:3px 7px;background:rgba(3,102,176,0.06);border-radius:5px;color:var(--brass-dark,#0255a0);border:1px solid rgba(3,102,176,0.12);}
+      .sh-search-input-wrap svg{color:#0255a0;flex-shrink:0;}
+      #sharedSearchInput{flex:1;border:none;outline:none;font-family:'Work Sans',sans-serif;font-size:1rem;color:#2d241f;background:transparent;}
+      .sh-search-input-wrap kbd{font-size:0.7rem;padding:3px 7px;background:rgba(3,102,176,0.06);border-radius:5px;color:#0255a0;border:1px solid rgba(3,102,176,0.12);}
       .sh-search-suggestions{padding:10px 8px 14px;}
-      .sh-search-group{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--brass-dark,#0255a0);padding:4px 12px 8px;}
-      .sh-search-item{display:block;padding:9px 12px;border-radius:9px;font-size:0.88rem;color:var(--deepwood,#2d241f);text-decoration:none;cursor:pointer;transition:background 0.15s;}
+      .sh-search-group{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0255a0;padding:4px 12px 8px;}
+      .sh-search-item{display:block;padding:9px 12px;border-radius:9px;font-size:0.88rem;color:#2d241f;text-decoration:none;cursor:pointer;transition:background 0.15s;}
       .sh-search-item:hover{background:rgba(3,102,176,0.05);}
 
       .nav-logout svg{stroke:rgba(199,74,60,0.65);}
@@ -482,7 +488,7 @@
       .avatar-initials-pill {
         width:34px;height:34px;border-radius:10px;
         display:flex;align-items:center;justify-content:center;
-        font-family:var(--font-display,'Raleway',sans-serif);
+        font-family:'Raleway',sans-serif;
         font-weight:700;font-size:0.72rem;color:white;
         border:2px solid white;flex-shrink:0;
       }
@@ -490,22 +496,22 @@
     document.head.appendChild(s);
   }
 
+  // ── BACKGROUND ────────────────────────────────────────────────
   function injectDoodleBg() {
     if (document.getElementById('doodleBg')) return;
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.id = 'doodleBg';
     div.style.cssText = [
-      'position:fixed', 'inset:0',
-      "background-image:url('assests/community_portal_bg.png')", /* rename community_portal_bg-52339207.png → community_portal_bg.png */
-      'background-size:cover', 'background-position:center',
+      'position:fixed','inset:0',
+      "background-image:url('assests/community_portal_bg.png')",
+      'background-size:cover','background-position:center',
       'background-repeat:no-repeat',
-      'opacity:0.05',
-      'pointer-events:none',
-      'z-index:-1',
+      'opacity:0.05','pointer-events:none','z-index:-1',
     ].join(';');
     document.body.prepend(div);
   }
 
+  // ── INIT ──────────────────────────────────────────────────────
   function init() {
     injectSharedStyles();
     injectDoodleBg();
@@ -515,9 +521,7 @@
     injectProfileDropdown();
     injectSearchOverlay();
     wireEvents();
-    // Load live data from PHP APIs (no-op if not on PHP server)
-    loadProfileFromApi();
-    loadNotificationsFromApi();
+    loadLiveData(); // ✅ FIXED: was incorrectly calling loadProfileFromApi() and loadNotificationsFromApi()
   }
 
   if (document.readyState === 'loading') {
@@ -525,4 +529,5 @@
   } else {
     init();
   }
+
 })();
