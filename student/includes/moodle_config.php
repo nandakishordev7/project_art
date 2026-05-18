@@ -11,7 +11,7 @@
 define('MOODLE_DB_HOST', '127.0.0.1');
 define('MOODLE_DB_PORT', '3306'); // Change to 3307 if using MariaDB
 define('MOODLE_DB_USER', 'root');
-define('MOODLE_DB_PASS', 'jabbar2424'); // MySQL database password (same as phpMyAdmin)
+define('MOODLE_DB_PASS', ''); // MySQL database password (same as phpMyAdmin)
 define('MOODLE_DB_NAME', 'moodle_db');
 define('MOODLE_DB_PREFIX', 'mdl_');
 define('MOODLE_DB_CHARSET', 'utf8mb4');

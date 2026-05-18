@@ -6,7 +6,7 @@
  * - Host: 127.0.0.1 (for stability over localhost)
  * - Port: 3306 (MySQL - change if your port is different)
  * - User: root
- * - Password: Jabbar@2424
+ * - Password: 
  * - Collation: utf8mb4_unicode_ci (Moodle compatible)
  * 
  * NOTE: Run find_port.php to find your actual database port!
@@ -16,7 +16,7 @@
 define('DB_HOST', '127.0.0.1');
 define('DB_PORT', '3306'); // IMPORTANT: Run find_port.php to find your actual port!
 define('DB_USER', 'root');
-define('DB_PASS', 'jabbar2424'); // Database password
+define('DB_PASS', ''); // Database password
 define('DB_NAME', 'das_student');
 define('DB_CHARSET', 'utf8mb4');
 define('DB_COLLATE', 'utf8mb4_unicode_ci');
