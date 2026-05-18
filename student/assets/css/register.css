@@ -1,0 +1,84 @@
+/* Digital Art School - Registration Page Specific Styles */
+
+.multi-step-form {
+    position: relative;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-title {
+    font-family: 'Brandon Grotesque', 'Arial Black', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-teal);
+}
+
+.form-navigation {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.form-navigation .btn {
+    flex: 1;
+}
+
+.btn-detect-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-detect-location:hover {
+    background: var(--gray-200);
+}
+
+.btn-detect-location svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Error state */
+input.error,
+select.error,
+textarea.error {
+    border-color: var(--error) !important;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}

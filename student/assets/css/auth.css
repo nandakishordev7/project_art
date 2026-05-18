@@ -1,0 +1,409 @@
+/* Digital Art School - Authentication Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Brand Colors */
+    --primary-blue: #0366B0;
+    --primary-teal: #02B393;
+    --primary-green: #A3CE47;
+    --accent-yellow: #F3C73B;
+    --accent-gray: #606060;
+    
+    /* Grays */
+    --gray-50: #f8f9fa;
+    --gray-100: #e9ecef;
+    --gray-200: #dee2e6;
+    --gray-300: #ced4da;
+    --gray-600: #6c757d;
+    --gray-900: #212529;
+    
+    /* Semantic Colors */
+    --success: #28a745;
+    --error: #dc3545;
+    --warning: #ffc107;
+}
+
+body {
+    font-family: 'Campton', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Sliding Animation */
+.slide-in-right {
+    animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Auth Container */
+.auth-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(3, 102, 176, 0.1);
+    padding: 40px;
+}
+
+/* Header */
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo-small {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.auth-header h1 {
+    font-family: 'Brandon Grotesque', 'Arial Black', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    font-size: 15px;
+    color: var(--gray-600);
+}
+
+/* Alerts */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.alert svg {
+    flex-shrink: 0;
+}
+
+.alert-error {
+    background: #fee;
+    color: var(--error);
+    border: 1px solid #fcc;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    color: var(--success);
+    border: 1px solid #c8e6c9;
+}
+
+.alert-info {
+    background: #e3f2fd;
+    color: var(--primary-blue);
+    border: 1px solid #bbdefb;
+}
+
+/* Form Styles */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Campton', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(3, 102, 176, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--gray-300);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group small {
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+/* Two Column Layout */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Buttons */
+.btn {
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Campton', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(3, 102, 176, 0.3);
+}
+
+.btn-primary:hover {
+    background: #025a99;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(3, 102, 176, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-900);
+}
+
+.btn-secondary:hover {
+    background: var(--gray-200);
+}
+
+.btn-success {
+    background: var(--primary-teal);
+    color: white;
+    box-shadow: 0 4px 12px rgba(2, 179, 147, 0.3);
+}
+
+.btn-success:hover {
+    background: #029d7f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(2, 179, 147, 0.4);
+}
+
+/* Auth Footer */
+.auth-footer {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
+}
+
+.auth-footer p {
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.auth-footer a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: #025a99;
+    text-decoration: underline;
+}
+
+/* File Upload Styling */
+.file-upload-wrapper {
+    position: relative;
+}
+
+.file-upload-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 20px;
+    border: 2px dashed var(--gray-300);
+    border-radius: 8px;
+    background: var(--gray-50);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-label:hover {
+    border-color: var(--primary-blue);
+    background: rgba(3, 102, 176, 0.05);
+}
+
+.file-upload-label svg {
+    width: 32px;
+    height: 32px;
+    color: var(--gray-600);
+}
+
+.file-selected {
+    border-color: var(--primary-teal);
+    background: rgba(2, 179, 147, 0.05);
+}
+
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gray-200);
+    z-index: 0;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-number {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.progress-step.completed .step-number {
+    background: var(--primary-teal);
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    color: var(--gray-600);
+    text-align: center;
+}
+
+.progress-step.active .step-label {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .auth-card {
+        padding: 24px;
+    }
+    
+    .auth-header h1 {
+        font-size: 24px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .progress-steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .progress-steps::before {
+        display: none;
+    }
+}

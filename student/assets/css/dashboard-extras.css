@@ -1,0 +1,214 @@
+/* Digital Art School - Additional Dashboard Styles */
+
+/* ========== CALENDAR DAYS ========== */
+.calendar-day {
+    padding: 8px 4px;
+    font-size: 13px;
+    color: var(--gray-900);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background: var(--gray-100);
+}
+
+.calendar-day.today {
+    background: var(--primary-blue);
+    color: white;
+    font-weight: 700;
+}
+
+.calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--primary-teal);
+    border-radius: 50%;
+}
+
+.calendar-day.empty {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ========== TEACHER DETAIL MODAL ========== */
+.teacher-detail-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.teacher-detail-image {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.teacher-detail-image img,
+.teacher-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.teacher-avatar-large {
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-teal));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.teacher-tag-large {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+}
+
+.teacher-detail-info h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--gray-900);
+}
+
+.teacher-email {
+    color: var(--gray-600);
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.teacher-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.teacher-stats .stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.teacher-stats svg {
+    color: var(--primary-teal);
+}
+
+.detail-section {
+    margin-bottom: 24px;
+}
+
+.detail-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--gray-900);
+}
+
+.detail-section p {
+    color: var(--gray-600);
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.disciplines-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.discipline-tag {
+    padding: 6px 14px;
+    border: 2px solid;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.time-slot {
+    padding: 8px 16px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--gray-900);
+    font-weight: 500;
+}
+
+.apply-btn-large {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+    transition: all 0.3s ease;
+}
+
+.apply-btn-large:hover {
+    background: var(--primary-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(3, 102, 176, 0.3);
+}
+
+.class-full-message {
+    padding: 20px;
+    background: var(--gray-100);
+    border-radius: 10px;
+    text-align: center;
+    color: var(--gray-600);
+    font-weight: 600;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 768px) {
+    .teacher-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .teacher-stats {
+        justify-content: center;
+    }
+}
